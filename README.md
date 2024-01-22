@@ -2,3 +2,4 @@
 Project 2 for VET TEC Java bootcamp
 
 Playable Blackjack game WOW!
+Isn't it great?
