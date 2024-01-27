@@ -1,13 +1,11 @@
 package com.skillstorm.assets;
 
-import java.util.HashSet;
-
 // Player Name Earnings Hand of cards Hit method Split method Stay method etc.
 public class Player {
 
     private String name;
     private double earnings;
-    private HashSet<Card> hand;
+    private Hand hand;
 
     public Player(String name) {
         this.name = name;
@@ -34,23 +32,12 @@ public class Player {
         this.earnings = earnings;
     }
 
-    public HashSet<Card> getHand() {
+    public Hand getHand() {
         return hand;
     }
 
-    public void setHand(HashSet<Card> hand) {
+    public void setHand(Hand hand) {
         this.hand = hand;
-    }
-
-    public void hit() {
-    }
-
-    public void split() {
-
-    }
-
-    public void stay() {
-
     }
 
     @Override
