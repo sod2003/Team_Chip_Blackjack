@@ -3,9 +3,9 @@ package com.skillstorm.assets;
 // The Card class, not specifically mentioned in the requirements, but it's a good design decision to delegate.
 public class Card {
     private Suit suit;
-    private int rank;
+    private Rank rank;
 
-    private Card(Suit suit, int rank) {
+    private Card(Suit suit, Rank rank) {
         this.suit = suit;
         this.rank = rank;
     }
@@ -14,7 +14,7 @@ public class Card {
         return suit;
     }
 
-    public int getRank() {
+    public Rank getRank() {
         return rank;
     }
 
@@ -22,8 +22,9 @@ public class Card {
         Card[] cards = new Card[52];
         int index = 0;
         for (Suit suit : Suit.values()) {
-            for (int i = 1; i <= 13; i++, index++) {
-                cards[index] = new Card(suit, i);
+            for (Rank rank : Rank.values()) {
+                cards[index] = new Card(suit, rank);
+                index++;
             }
         }
         return cards;
@@ -34,7 +35,7 @@ public class Card {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((suit == null) ? 0 : suit.hashCode());
-        result = prime * result + rank;
+        result = prime * result + ((rank == null) ? 0 : rank.hashCode());
         return result;
     }
 
