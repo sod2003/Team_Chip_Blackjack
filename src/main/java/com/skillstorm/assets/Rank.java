@@ -2,7 +2,7 @@ package com.skillstorm.assets;
 
 public enum Rank {
 
-    ACE(1),
+    ACE(1), // TODO need to add a way to turn this into an 11, possibly elsewhere in the app
     TWO(2),
     THREE(3),
     FOUR(4),
