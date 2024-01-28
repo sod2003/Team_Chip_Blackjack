@@ -1,9 +1,11 @@
 package com.skillstorm.assets;
 
 // The Card class, not specifically mentioned in the requirements, but it's a good design decision to delegate.
+
 public class Card {
     private Suit suit;
     private Rank rank;
+    private boolean faceUp = false;
 
     private Card(Suit suit, Rank rank) {
         this.suit = suit;
@@ -16,6 +18,14 @@ public class Card {
 
     public Rank getRank() {
         return rank;
+    }
+
+    public boolean isFaceUp() {
+        return faceUp;
+    }
+
+    public void setFaceUp(boolean faceUp) {
+        this.faceUp = faceUp;
     }
 
     public static Card[] generateCards() {
