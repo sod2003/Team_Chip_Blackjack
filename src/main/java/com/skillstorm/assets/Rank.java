@@ -2,19 +2,29 @@ package com.skillstorm.assets;
 
 public enum Rank {
 
-    ACE,
-    TWO,
-    THREE,
-    FOUR,
-    FIVE,
-    SIX,
-    SEVEN,
-    EIGHT,
-    NINE,
-    TEN,
-    JACK,
-    QUEEN,
-    KING;
+    ACE(1),
+    TWO(2),
+    THREE(3),
+    FOUR(4),
+    FIVE(5),
+    SIX(6),
+    SEVEN(7),
+    EIGHT(8),
+    NINE(9),
+    TEN(10),
+    JACK(10),
+    QUEEN(10),
+    KING(10);
+
+    private final int rankValue;
+
+    private Rank(int rankValue) {
+        this.rankValue = rankValue;
+    }
+
+    public int getRankValue() {
+        return this.rankValue;
+    }
 
     @Override
     public String toString() {
