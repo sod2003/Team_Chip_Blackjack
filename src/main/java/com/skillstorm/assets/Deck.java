@@ -3,7 +3,6 @@ package com.skillstorm.assets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 // Deck All cards currently in the Deck Shuffle method Deal method Card Suit Value
@@ -23,7 +22,7 @@ public class Deck {
     }
 
     public void shuffle() {
-        Collections.shuffle((List<Card>) cards);
+        Collections.shuffle((Arrays.asList(cards)));
     }
     
     @Override
