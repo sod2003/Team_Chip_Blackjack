@@ -4,26 +4,25 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 // Deck All cards currently in the Deck Shuffle method Deal method Card Suit Value
 public class Deck {
-    private Queue<Card> cards;
+    private List<Card> cards;
 
     public Deck(Card[] cards) {
         this.cards = new LinkedList<>(Arrays.asList(cards));
     }
 
-    public Queue<Card> getCards() {
+    public List<Card> getCards() {
         return cards;
     }
 
     public Card draw() {
-        return cards.poll();
+        return cards.remove(0);
     }
 
     public void shuffle() {
-        Collections.shuffle((List<Card>) cards);
+        Collections.shuffle(cards);
     }
     
     @Override
