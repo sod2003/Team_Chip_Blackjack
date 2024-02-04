@@ -1,6 +1,6 @@
 package com.skillstorm.logic;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import com.skillstorm.assets.Deck;
 import com.skillstorm.assets.House;
 import com.skillstorm.assets.Player;
@@ -12,10 +12,9 @@ import com.skillstorm.assets.Player;
 
 public class GameLogic {
 
-    private LinkedList<Player> playerList;
+    private ArrayList<Player> playerList = new ArrayList<>();
     private House house;
     private Deck deck;
-    // private List<Player> playerData = Load.loadPlayerData(null);
 
     /**
      * Logic for dealing cards to everyone in the game, including the house.
