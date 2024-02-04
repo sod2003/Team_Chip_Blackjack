@@ -1,5 +1,9 @@
 package com.skillstorm.assets;
 
+import java.util.HashMap;
+
+import org.json.simple.JSONObject;
+
 // Player Name Earnings Hand of cards Hit method Split method Stay method etc.
 public class Player {
 
@@ -38,6 +42,23 @@ public class Player {
 
     public void setHand(Hand hand) {
         this.hand = hand;
+    }
+
+    /**
+     * Converts a player object to a JSON
+     * 
+     * @param player
+     * @return
+     */
+    public JSONObject toJSONObject() {
+
+        // store player data in a Hashmap for use in the JSONObject constructor
+        HashMap<String, Object> playerDetails = new HashMap<>();
+        playerDetails.put("name", name);
+        playerDetails.put("earnings", Double.valueOf(earnings));
+
+        return new JSONObject(playerDetails);
+
     }
 
     @Override
