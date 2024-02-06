@@ -2,10 +2,13 @@ package com.skillstorm;
 
 import java.util.Scanner;
 
+import com.skillstorm.assets.GameLogic;
+
 /**
  * Hello world!
  */
 public final class App {
+    static GameLogic gl = new GameLogic();
     private App() {
     }
 
@@ -15,21 +18,35 @@ public final class App {
 
         System.out.println("Welcome to Team Chip's Blackjack Game!\n");
         while(!gameComplete) {
-            System.out.println("1. Login\n"
-            + "2. Play a game of Blackjack as a Guest\n"
-            + "3. See Leaderboard\n"
-            + "4. Exit Game\n");
+            printMenu();
             String selection = sc.nextLine();
-            process(selection);
+            switch(selection) {
+                case "1":
+                    gl.startGame();
+                case "2":
+                    gl.printLeaderboard();
+                case "3":
+                    gameComplete = true;
+                default:
+                    System.out.println("Sorry, I don't recognize that input. Try again.");
+            }
         }
         System.out.println("Thanks for playing Team Chip's Blackjack Game! Logging you out now...");
         sc.close();
     }
 
-    private static void process(String selection) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'process'");
+    private static void printMenu() {
+        System.out.println("1. Start Game\n"
+            + "2. See Leaderboard\n"
+            + "3. Exit Game\n");
     }
+
+    // private static void printAltMenu() {
+    //     System.out.println("1. Login\n"
+    //         + "2. Play a game of Blackjack as a Guest\n"
+    //         + "3. See Leaderboard\n"
+    //         + "4. Exit Game\n");
+    // }
 
     /**
      * Says hello to the world.
