@@ -37,4 +37,13 @@ public class GameLogic {
         house.getHand().hit(deck);
     }
 
+    public void startGame() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'startGame'");
+    }
+
+    public void printLeaderboard() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'printLeaderboard'");
+    }
 }
