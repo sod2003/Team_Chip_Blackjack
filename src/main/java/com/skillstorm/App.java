@@ -2,7 +2,7 @@ package com.skillstorm;
 
 import java.util.Scanner;
 
-import com.skillstorm.assets.GameLogic;
+import com.skillstorm.logic.GameLogic;
 
 /**
  * Hello world!
