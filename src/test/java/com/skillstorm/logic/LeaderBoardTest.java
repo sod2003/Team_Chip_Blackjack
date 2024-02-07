@@ -14,6 +14,10 @@ public class LeaderBoardTest {
 
         gl.printLeaderboard(playerList);
 
+        System.out.println("Trying with an empty leaderboard/list:");
+        ArrayList<Player> emptyList = new ArrayList<>();
+        gl.printLeaderboard(emptyList);
+
     }
 
 }

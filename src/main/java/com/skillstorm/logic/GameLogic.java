@@ -46,14 +46,21 @@ public class GameLogic {
     }
 
     public void printLeaderboard(List<Player> playerList) {
+        if (playerList == null || playerList.isEmpty()) {
+            System.out.println("The leaderboard is empty.");
+            return;
+        }
+
         int rank = 1;
         final int leaderboardMaxSize = 10;
+
         // sort the list of players in descending order based on their earnings
         System.out.println("before sort" + playerList);
-        Collections.sort(playerList, Collections.reverseOrder());
-        // Collections.sort(playerList, (o1, o2) -> new PlayerComparator().compare(o1,
-        // o2));
+        Collections.sort(playerList, (o1, o2) -> new PlayerComparator().compare(o1,
+                o2));
+        Collections.reverse(playerList);
         System.out.println("after sort" + playerList);
+
         // print the sorted list to the screen
         System.out.println("###############################");
         System.out.println("######### LEADERBOARD #########");
