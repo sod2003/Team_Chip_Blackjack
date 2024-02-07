@@ -1,6 +1,9 @@
 package com.skillstorm.logic;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.skillstorm.assets.Deck;
 import com.skillstorm.assets.House;
 import com.skillstorm.assets.Player;
@@ -42,8 +45,24 @@ public class GameLogic {
         throw new UnsupportedOperationException("Unimplemented method 'startGame'");
     }
 
-    public void printLeaderboard() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'printLeaderboard'");
+    public void printLeaderboard(List<Player> playerList) {
+        int rank = 1;
+        final int leaderboardMaxSize = 10;
+        // sort the list of players in descending order based on their earnings
+        System.out.println("before sort" + playerList);
+        Collections.sort(playerList, Collections.reverseOrder());
+        // Collections.sort(playerList, (o1, o2) -> new PlayerComparator().compare(o1,
+        // o2));
+        System.out.println("after sort" + playerList);
+        // print the sorted list to the screen
+        System.out.println("###############################");
+        System.out.println("######### LEADERBOARD #########");
+        System.out.println("###############################");
+        for (Player plyr : playerList) {
+            System.out.printf("%d: %s total earnings: $%.2f%n", rank, plyr.getName(), plyr.getEarnings());
+            rank++;
+            if (rank >= leaderboardMaxSize)
+                break;
+        }
     }
 }
