@@ -40,9 +40,54 @@ public class GameLogic {
         house.getHand().hit(deck);
     }
 
-    public void startGame() {
+    private void shuffleDeck() {
+        deck = new Deck();
+        deck.shuffle();
+    }
+
+    private void takeBets() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'startGame'");
+        throw new UnsupportedOperationException("Unimplemented method 'takeBets'");
+    }
+
+    public void startGame() {
+        boolean gameOver = false;
+
+        while(!gameOver) {
+            takeBets();
+            shuffleDeck();
+            deal();
+            for (Player player : playerList) {
+                handlePlayerTurn(player);
+            }
+        }
+    }
+
+    private void handlePlayerTurn(Player player) {
+        boolean endTurn = false;
+
+        while (!endTurn) {
+            if (player.getHand().total() > 21) {
+                System.out.println("BUST! " + player.getName() + " has " + player.getHand().total() + ".");
+                // TODO Lose bet here
+                endTurn = true;
+            } else if (player.getHand().total() == 21) {
+                System.out.println("JACKPOT! " + player.getName() + " has " + player.getHand().total() + ".");
+                // TODO Win bet here
+            }
+            showTable();
+            printOptions();
+        }
+    }
+
+    private void printOptions() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'printOptions'");
+    }
+
+    private void showTable() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'showTable'");
     }
 
     public void printLeaderboard(List<Player> playerList) {
