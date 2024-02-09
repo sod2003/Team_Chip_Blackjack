@@ -54,9 +54,12 @@ public class GameLogic {
             takeBets();
             shuffleDeck();
             deal();
+            // TODO Naturals rule needs implementing here
             for (Player player : playerList) {
+                // TODO Spliting / Doubling Down / Insurance
                 handlePlayerTurn(player);
             }
+            // TODO Settlement
         }
     }
 
@@ -74,6 +77,15 @@ public class GameLogic {
             }
             showTable();
             printOptions();
+            int playerAction = 0; // TODO Take input from player for action
+            switch (playerAction) {
+                case 1:
+                    // TODO Hit Action
+                case 2:
+                    // TODO Stay Action
+                case 3:
+                    // TODO Split?
+            }
         }
     }
 
