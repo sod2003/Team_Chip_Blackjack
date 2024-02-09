@@ -4,7 +4,7 @@ package com.skillstorm.assets;
 public class House {
 
     private String name;
-    private Hand hand;
+    private Hand hand = new Hand();
     private double earnings;
 
     public House() {
