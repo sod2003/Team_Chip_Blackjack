@@ -7,7 +7,11 @@ public class UI {
     public static Scanner scanner = new Scanner(System.in);
 
     /**
-     * Method to get user input
+     * Method to get user input as int for multiple choice prompts.
+     * Use the prompt argument to ask the user for input.
+     * Use the userChoices argument to set the amount of choices they have
+     * available.
+     * Anything less than zero or greater than the amount will re-prompt the user.
      * 
      * @param prompt
      * @param userChoices
@@ -25,6 +29,30 @@ public class UI {
                 input = -1;
             }
         } while (input < 1 || input > userChoices);
+        clearConsole();
+        return input;
+    }
+
+    /**
+     * Method to get user input as string. Use the prompt argument to ask the user
+     * for input.
+     * 
+     * @param prompt
+     * @param userChoices
+     * @return USER INPUT
+     */
+    public static String readStr(String prompt) {
+        String input;
+
+        do {
+            try {
+                System.out.print(prompt);
+                input = scanner.next();
+            } catch (Exception e) {
+                System.out.println("Please enter at least one valid character as your name.");
+                input = "";
+            }
+        } while (input.length() < 1);
         clearConsole();
         return input;
     }
