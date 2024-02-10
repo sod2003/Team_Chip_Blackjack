@@ -29,6 +29,30 @@ public class GameLogic {
         playerList.add(playerToAdd);
     }
 
+    public ArrayList<Player> getPlayerList() {
+        return playerList;
+    }
+
+    public void setPlayerList(ArrayList<Player> playerList) {
+        this.playerList = playerList;
+    }
+
+    public House getHouse() {
+        return house;
+    }
+
+    public void setHouse(House house) {
+        this.house = house;
+    }
+
+    public Deck getDeck() {
+        return deck;
+    }
+
+    public void setDeck(Deck deck) {
+        this.deck = deck;
+    }
+
     /**
      * Logic for dealing cards to everyone in the game, including the house.
      * Includes possibility of having multiple players.

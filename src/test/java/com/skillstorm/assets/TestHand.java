@@ -16,8 +16,13 @@ public class TestHand {
         GameLogic gl = new GameLogic();
         Player player = new Player("Josh");
         gl.addPlayer(player);
+        gl.getDeck().shuffle();
         gl.deal();
+        player.getHand().hit(gl.getDeck());
+        player.getHand().hit(gl.getDeck());
+        player.getHand().hit(gl.getDeck());
         System.out.println(player.getHand().show());
+        System.out.println(player.getHand().mask());
 
     }
 
