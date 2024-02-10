@@ -40,6 +40,77 @@ public class Card {
         return cards;
     }
 
+    /**
+     * Returns an ASCII Art String representation of the card.
+     * 
+     * @return
+     */
+    public String show() {
+        StringBuilder cardArt = new StringBuilder();
+        String rankText = this.rank.getRankASCII();
+
+        String heart = String.format(
+                "|%s   |\r\n" + //
+                        "|(\\/)|\r\n" + //
+                        "| \\/ |\r\n" + //
+                        "|   %s|\r\n" + //
+                        "`----`",
+                rankText, rankText);
+        String diamond = String.format(
+                "|%s   |\r\n" + //
+                        "| /\\ |\r\n" + //
+                        "| \\/ |\r\n" + //
+                        "|   %s|\r\n" + //
+                        "`----`",
+                rankText, rankText);
+        String spade = String.format(
+                "|%s   |\r\n" + //
+                        "| /\\ |\r\n" + //
+                        "|(__)|\r\n" + //
+                        "| /\\%s|\r\n" + //
+                        "`----`",
+                rankText, rankText);
+        String club = String.format(
+                "|%s   |\r\n" + //
+                        "| () |\r\n" + //
+                        "|()()|\r\n" + //
+                        "| /\\%s|\r\n" + //
+                        "`----`",
+                rankText, rankText);
+        if (faceUp) {
+            cardArt.append(" ____ \r\n");
+            switch (this.suit) {
+                case HEART:
+                    cardArt.append(heart);
+                    break;
+                case DIAMOND:
+                    cardArt.append(diamond);
+                    break;
+                case SPADE:
+                    cardArt.append(spade);
+                    break;
+                case CLUB:
+                    cardArt.append(club);
+                    break;
+            }
+            // adjusting width of the card if double digit rank
+            if (rankText.length() == 2) {
+                cardArt.deleteCharAt(11);
+                cardArt.deleteCharAt(35);
+
+            }
+
+        } else {
+            cardArt.append(" ____\r\n" + //
+                    "|\\  /|\r\n" + //
+                    "|}}{{|\r\n" + //
+                    "|}}{{|\r\n" + //
+                    "|}}{{|\r\n" + //
+                    "|/__\\|");
+        }
+        return cardArt.toString();
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;

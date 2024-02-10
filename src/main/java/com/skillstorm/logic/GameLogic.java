@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.skillstorm.assets.Card;
 import com.skillstorm.assets.Deck;
 import com.skillstorm.assets.House;
 import com.skillstorm.assets.Player;
@@ -16,8 +17,41 @@ import com.skillstorm.assets.Player;
 public class GameLogic {
 
     private ArrayList<Player> playerList = new ArrayList<>();
-    private House house;
-    private Deck deck;
+    private House house = new House();
+    private Deck deck = new Deck(Card.generateCards());
+
+    /**
+     * Add a player to GameLogic's playerList
+     * 
+     * @param playerToAdd
+     */
+    public void addPlayer(Player playerToAdd) {
+        playerList.add(playerToAdd);
+    }
+
+    public ArrayList<Player> getPlayerList() {
+        return playerList;
+    }
+
+    public void setPlayerList(ArrayList<Player> playerList) {
+        this.playerList = playerList;
+    }
+
+    public House getHouse() {
+        return house;
+    }
+
+    public void setHouse(House house) {
+        this.house = house;
+    }
+
+    public Deck getDeck() {
+        return deck;
+    }
+
+    public void setDeck(Deck deck) {
+        this.deck = deck;
+    }
 
     /**
      * Logic for dealing cards to everyone in the game, including the house.

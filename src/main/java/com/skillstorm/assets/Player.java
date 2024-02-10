@@ -9,7 +9,7 @@ public class Player {
 
     private String name;
     private double earnings;
-    private Hand hand;
+    private Hand hand = new Hand();
 
     public Player(String name) {
         this.name = name;
