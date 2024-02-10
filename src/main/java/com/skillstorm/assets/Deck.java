@@ -9,6 +9,10 @@ import java.util.List;
 public class Deck {
     private List<Card> cards;
 
+    public Deck() {
+        cards = new LinkedList<>(Arrays.asList(Card.generateCards()));
+    }
+
     public Deck(Card[] cards) {
         this.cards = new LinkedList<>(Arrays.asList(cards));
     }
