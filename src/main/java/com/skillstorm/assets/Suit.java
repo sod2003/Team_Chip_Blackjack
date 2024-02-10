@@ -6,6 +6,7 @@ public enum Suit {
     SPADE("| /\\ |", "|(__)|"),
     CLUB("| () |", "|()()|");
 
+    // These rows are to be used by the Hand.asciiString() method
     private final String asciiRow3;
     private final String asciiRow4;
 

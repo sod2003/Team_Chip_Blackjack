@@ -40,6 +40,11 @@ public class Card {
         return cards;
     }
 
+    /**
+     * Returns an ASCII Art String representation of the card.
+     * 
+     * @return
+     */
     public String show() {
         StringBuilder cardArt = new StringBuilder();
         String rankText = this.rank.getRankASCII();
