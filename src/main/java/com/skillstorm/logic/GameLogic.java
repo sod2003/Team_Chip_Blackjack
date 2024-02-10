@@ -60,18 +60,18 @@ public class GameLogic {
     public void deal() {
         // Deal each player a card and set it to be face up
         for (Player player : playerList) {
-            player.getHand().hit(deck);
+            player.getHand().hit(deck.draw());
             player.getHand().getCardList().getFirst().setFaceUp(true);
         }
         // Deal house a card and set it to face up
-        house.getHand().hit(deck);
+        house.getHand().hit(deck.draw());
         house.getHand().getCardList().getFirst().setFaceUp(true);
         // Deal each player a second card but leave it face down
         for (Player player : playerList) {
-            player.getHand().hit(deck);
+            player.getHand().hit(deck.draw());
         }
         // Deal second card to house but leave it face down
-        house.getHand().hit(deck);
+        house.getHand().hit(deck.draw());
     }
 
     private void shuffleDeck() {
@@ -92,7 +92,7 @@ public class GameLogic {
         while(!gameOver) {
             takeBets();
             shuffleDeck();
-            deal(); // TODO rewrite deal
+            deal();
             // TODO Naturals rule needs implementing here
             for (Player player : playerList) {
                 // TODO Spliting / Doubling Down / Insurance

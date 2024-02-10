@@ -42,12 +42,12 @@ public class Hand {
     }
 
     /**
-     * Draws a card from the deck provided in the argument and adds it to the hand.
+     * Draws a card
      * 
-     * @param deck
+     * @param card
      */
-    public void hit(Deck deck) {
-        cards.add(deck.draw());
+    public void hit(Card card) {
+        cards.add(card);
     }
 
     public void split() {
