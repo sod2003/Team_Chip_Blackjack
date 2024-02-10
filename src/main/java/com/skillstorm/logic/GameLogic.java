@@ -87,17 +87,20 @@ public class GameLogic {
     public void startGame() {
         boolean gameOver = false;
 
+        // TODO Load method for leaderboard, take name input, create Player
+
         while(!gameOver) {
             takeBets();
             shuffleDeck();
-            deal();
+            deal(); // TODO rewrite deal
             // TODO Naturals rule needs implementing here
             for (Player player : playerList) {
                 // TODO Spliting / Doubling Down / Insurance
                 handlePlayerTurn(player);
             }
-            // TODO Settlement
+            // TODO Handle House, Settlement
         }
+        // TODO save current player list, exit game logic
     }
 
     private void handlePlayerTurn(Player player) {
