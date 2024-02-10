@@ -40,7 +40,7 @@ public class Card {
         return cards;
     }
 
-    public String ascii() {
+    public String show() {
         StringBuilder cardArt = new StringBuilder();
         String rankText = this.rank.getRankASCII();
 

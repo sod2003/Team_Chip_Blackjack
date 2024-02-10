@@ -8,9 +8,9 @@ public class TestDeck {
         System.out.println(deck);
 
         for (Card card : deck.getCards()) {
-            System.out.println(card.ascii());
+            System.out.println(card.show());
             card.setFaceUp(true);
-            System.out.println(card.ascii());
+            System.out.println(card.show());
 
         }
 

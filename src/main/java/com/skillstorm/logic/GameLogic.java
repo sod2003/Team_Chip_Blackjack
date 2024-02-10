@@ -21,7 +21,7 @@ public class GameLogic {
     private Deck deck = new Deck(Card.generateCards());
 
     /**
-     * Add a player to GameLogic playerList
+     * Add a player to GameLogic's playerList
      * 
      * @param playerToAdd
      */

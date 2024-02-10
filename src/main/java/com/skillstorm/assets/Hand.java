@@ -41,6 +41,11 @@ public class Hand {
         return total;
     }
 
+    /**
+     * Draws a card from the deck provided in the argument and adds it to the hand.
+     * 
+     * @param deck
+     */
     public void hit(Deck deck) {
         cards.add(deck.draw());
     }
@@ -58,6 +63,15 @@ public class Hand {
         return "Hand [cards=" + cards + "]";
     }
 
+    /**
+     * Iterates through every card currently in the Hand and returns a formatted
+     * ASCII
+     * ART String representation of the cards in hand. Marked as private to be
+     * called by
+     * the Hand's show() and mask() methods.
+     * 
+     * @return
+     */
     private String asciiHand() {
         if (cards.isEmpty() || cards == null)
             return "Hand is empty!";
@@ -126,6 +140,13 @@ public class Hand {
         return asciiString.toString();
     }
 
+    /**
+     * Sets all cards in hand to face up, then calls the asciiHand() method to
+     * return an
+     * ASCII Art String representation of all the cards in hand, face up.
+     * 
+     * @return
+     */
     public String show() {
         for (Card card : cards) {
             card.setFaceUp(true);
@@ -134,6 +155,14 @@ public class Hand {
 
     }
 
+    /**
+     * Sets the first card in the hand to face down, then calls the asciiHand()
+     * method to return an
+     * ASCII Art String representation of all the cards in hand, with the first card
+     * "masked".
+     * 
+     * @return
+     */
     public String mask() {
         cards.get(0).setFaceUp(false);
         return asciiHand();
