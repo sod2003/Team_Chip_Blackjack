@@ -8,7 +8,7 @@ public class TestHand {
 
         GameLogic gl = new GameLogic();
         Player player = new Player("Josh");
-        gl.addPlayer(player);
+        gl.addActivePlayer(player);
         gl.getDeck().shuffle();
         gl.deal();
         player.getHand().hit(gl.getDeck().draw());
