@@ -142,6 +142,8 @@ public class GameLogic {
         try {
             // If player with the same name is in the leaderboardList, add them to the
             // active playerList
+            // TODO here is where we need to check if player is already in playerList so
+            // that we don't create a duplicate
             playerList.add(Load.getReturningPlayer(playerName, leaderboardList));
             UI.printHeading(String.format(
                     "Welcome back, %s! Ready for some more BlackJack?",
@@ -304,7 +306,7 @@ public class GameLogic {
 
         // sort the list of players in descending order based on their earnings
         System.out.println("before sort" + leaderboardList);
-        Collections.sort(leaderboardList, (o1, o2) -> new PlayerComparator().compare(o1,
+        Collections.sort(leaderboardList, (o1, o2) -> new PlayerEarningsComparator().compare(o1,
                 o2));
         Collections.reverse(leaderboardList);
         System.out.println("after sort" + leaderboardList);
