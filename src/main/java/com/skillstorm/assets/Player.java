@@ -8,7 +8,7 @@ import org.json.simple.JSONObject;
 public class Player {
 
     private String name;
-    private double earnings;
+    private double earnings; // TODO need to set default earnings aka starting cash
     private Hand hand = new Hand();
 
     public Player(String name) {

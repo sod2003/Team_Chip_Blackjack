@@ -3,6 +3,7 @@ package com.skillstorm.logic;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -73,14 +74,18 @@ public class Load {
      * player object if found or null if not found
      * 
      * @param name
-     * @param playerArray
+     * @param leaderboardList
      * @return
      */
-    public static Player getReturningPlayer(String name, ArrayList<Player> playerArray) {
+    public static Player getReturningPlayer(String name, ArrayList<Player> leaderboardList)
+            throws NoSuchElementException {
 
-        for (Player p : playerArray) {
+        for (Player p : leaderboardList) {
             if (p.getName().equals(name)) {
                 return p;
+            } else {
+                throw new NoSuchElementException(
+                        "Player does not already exist in the leaderboard. Create a new player.");
             }
         }
 

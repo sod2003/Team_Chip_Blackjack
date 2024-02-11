@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Map;
 
 import com.skillstorm.assets.Card;
@@ -20,6 +21,7 @@ public class GameLogic {
 
     private ArrayList<Player> playerList = new ArrayList<>();
     private Map<String, Double> bets = new HashMap<String, Double>();
+    private ArrayList<Player> leaderboardList = new ArrayList<>();
     private House house = new House();
     private Deck deck = new Deck(Card.generateCards());
 
@@ -28,8 +30,18 @@ public class GameLogic {
      * 
      * @param playerToAdd
      */
-    public void addPlayer(Player playerToAdd) {
+    public void addActivePlayer(Player playerToAdd) {
         playerList.add(playerToAdd);
+    }
+
+    /**
+     * Add a player to GameLogic's leaderboardList
+     * This is what will be serialized and saved to a JSON file
+     * 
+     * @param playerToAdd
+     */
+    public void addLeaderboardPlayer(Player playerToAdd) {
+        leaderboardList.add(playerToAdd);
     }
 
     public ArrayList<Player> getPlayerList() {
@@ -110,9 +122,21 @@ public class GameLogic {
     public void startGame() {
         boolean gameOver = false;
 
-        // TODO Load method for leaderboard, take name input, create Player
+        // Load JSON save file to populate leaderboardList
+        this.leaderboardList = Load.load();
+        // Take name input
+        String playerName = UI.readStr("Please enter your name: ");
+        try {
+            // If player with the same name is in the leaderboardList, add them to the
+            // active playerList
+            playerList.add(Load.getReturningPlayer(playerName, leaderboardList));
+        } catch (NoSuchElementException e) {
+            // If retrieving an existing player fails(exception thrown), create a new one
+            // with their name
+            playerList.add(new Player(playerName));
+        }
 
-        while(!gameOver) {
+        while (!gameOver) {
             takeBets();
             shuffleDeck();
             deal();
@@ -168,8 +192,8 @@ public class GameLogic {
         System.out.println("Your Hand with " + player.getHand().total() + ":\n" + player.getHand().show());
     }
 
-    public void printLeaderboard(List<Player> playerList) {
-        if (playerList == null || playerList.isEmpty()) {
+    public void printLeaderboard() {
+        if (leaderboardList == null || leaderboardList.isEmpty()) {
             System.out.println("The leaderboard is empty.");
             return;
         }
@@ -178,21 +202,29 @@ public class GameLogic {
         final int leaderboardMaxSize = 10;
 
         // sort the list of players in descending order based on their earnings
-        System.out.println("before sort" + playerList);
-        Collections.sort(playerList, (o1, o2) -> new PlayerComparator().compare(o1,
+        System.out.println("before sort" + leaderboardList);
+        Collections.sort(leaderboardList, (o1, o2) -> new PlayerComparator().compare(o1,
                 o2));
-        Collections.reverse(playerList);
-        System.out.println("after sort" + playerList);
+        Collections.reverse(leaderboardList);
+        System.out.println("after sort" + leaderboardList);
 
         // print the sorted list to the screen
         System.out.println("###############################");
         System.out.println("######### LEADERBOARD #########");
         System.out.println("###############################");
-        for (Player plyr : playerList) {
+        for (Player plyr : leaderboardList) {
             System.out.printf("%d: %s total earnings: $%.2f%n", rank, plyr.getName(), plyr.getEarnings());
             rank++;
             if (rank >= leaderboardMaxSize)
                 break;
         }
+    }
+
+    public ArrayList<Player> getLeaderboardList() {
+        return leaderboardList;
+    }
+
+    public void setLeaderboardList(ArrayList<Player> leaderboardList) {
+        this.leaderboardList = leaderboardList;
     }
 }
