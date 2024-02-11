@@ -36,6 +36,14 @@ public class Player {
         this.earnings = earnings;
     }
 
+    public void decreaseEarnings(double bet) {
+        earnings -= bet;
+    }
+
+    public void increaseEarnings(double winnings) {
+        earnings += winnings;
+    }
+
     public Hand getHand() {
         return hand;
     }
