@@ -139,12 +139,13 @@ public class GameLogic {
             takeBets();
             shuffleDeck();
             deal();
-            // TODO Naturals rule needs implementing here
-            for (Player player : playerList) {
-                // TODO Spliting / Doubling Down / Insurance
-                handlePlayerTurn(player);
+            if (!containsNaturals()) {
+                for (Player player : playerList) {
+                    // TODO Spliting / Doubling Down / Insurance
+                    handlePlayerTurn(player);
+                }
+                houseActions();
             }
-            houseActions();
             settlement();
             // TODO Implement "Play Again?" dialogue
         }
@@ -220,6 +221,19 @@ public class GameLogic {
                 }
             }
         }
+    }
+
+    private boolean containsNaturals() {
+        if (house.getHand().total() == 21) {
+            return true;
+        } else {
+            for (Player player : playerList) {
+                if (player.getHand().total() == 21) {
+                    bets.put(player.getName(), bets.get(player.getName()) * 1.25);
+                }
+            }
+        }
+        return false;
     }
 
     private String printOptions() {
