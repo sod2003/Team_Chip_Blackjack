@@ -58,6 +58,10 @@ public class Hand {
         // TODO add stay method to hand
     }
 
+    public void clear() {
+        cards.clear();
+    }
+
     @Override
     public String toString() {
         return "Hand [cards=" + cards + "]";
@@ -171,5 +175,4 @@ public class Hand {
         return asciiHand();
 
     }
-
 }

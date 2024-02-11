@@ -181,6 +181,10 @@ public class GameLogic {
                 }
             }
         }
+        house.getHand().clear();
+        for (Player player : playerList) {
+            player.getHand().clear();
+        }
     }
 
     private void houseActions() {
