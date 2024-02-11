@@ -144,8 +144,8 @@ public class GameLogic {
                     // TODO Spliting / Doubling Down / Insurance
                     handlePlayerTurn(player);
                 }
+                houseActions();
             }
-            houseActions();
             settlement();
             // TODO Implement "Play Again?" dialogue
         }
