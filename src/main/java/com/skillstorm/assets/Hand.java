@@ -165,6 +165,9 @@ public class Hand {
      */
     public String mask() {
         cards.get(0).setFaceUp(false);
+        for (int i = 1; i < cards.size(); i++) {
+            cards.get(i).setFaceUp(true);
+        }
         return asciiHand();
 
     }
