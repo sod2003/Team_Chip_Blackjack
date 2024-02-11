@@ -110,7 +110,8 @@ public class GameLogic {
             double bet = 0.0;
             while ((bet <= 0.0) || (bet > player.getEarnings())) {
                 String reponse = UI
-                        .readStr(String.format("You currently have $%.2f; Place your bet: ", player.getEarnings()));
+                        .readStr(String.format("%s, you currently have $%.2f; Place your bet: ", player.getName(),
+                                player.getEarnings()));
                 try {
                     bet = Double.parseDouble(reponse);
                 } catch (NumberFormatException e) {
@@ -121,7 +122,7 @@ public class GameLogic {
             }
             bets.put(player.getName(), bet);
             player.decreaseEarnings(bet);
-            UI.printHeading(String.format("%s places a bet of $%.2f", player.getName(), bet, null));
+            UI.printHeading(String.format("%s places a bet of $%.2f", player.getName(), bet));
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -131,6 +132,7 @@ public class GameLogic {
     }
 
     public void startGame() {
+        playerList.clear();
         boolean gameOver = false;
 
         // Load JSON save file to populate leaderboardList
@@ -224,6 +226,7 @@ public class GameLogic {
         }
         while (house.getHand().total() < 17) {
             UI.clearConsole();
+            UI.printHeading("The house hits.");
             house.getHand().hit(deck.draw());
             for (Player player : playerList) {
                 showTable(player);
@@ -234,6 +237,7 @@ public class GameLogic {
                 e.printStackTrace();
             }
         }
+        UI.printHeading("The house stays.");
     }
 
     protected void handlePlayerTurn(Player player) {
