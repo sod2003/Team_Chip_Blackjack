@@ -7,7 +7,7 @@ public class TestPlayerActions {
         GameLogic gl = new GameLogic();
         gl.getDeck().shuffle();
         Player sam = new Player("Sam", 20.00);
-        gl.addPlayer(sam);
+        gl.addActivePlayer(sam);
         gl.addBet(sam, 20.00);
         gl.deal();
         System.out.println(sam);
