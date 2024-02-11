@@ -91,6 +91,12 @@ public class GameLogic {
         }
         // Deal second card to house but leave it face down
         house.getHand().hit(deck.draw());
+        UI.printHeading("Dealing...");
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void shuffleDeck() {
@@ -109,13 +115,18 @@ public class GameLogic {
                     bet = Double.parseDouble(reponse);
                 } catch (NumberFormatException e) {
                     System.out.println("That's not a valid number.");
-                    UI.pressAnyKey();
+                    UI.pressEnter();
                     continue;
                 }
             }
             bets.put(player.getName(), bet);
             player.decreaseEarnings(bet);
-            System.out.printf("%s places a bet of $%.2f%n", player.getName(), bet);
+            UI.printHeading(String.format("%s places a bet of $%.2f", player.getName(), bet, null));
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -133,7 +144,7 @@ public class GameLogic {
             UI.printHeading(String.format(
                     "Welcome back, %s! Ready for some more BlackJack?",
                     playerName));
-            UI.pressAnyKey();
+            UI.pressEnter();
         } catch (NoSuchElementException e) {
             // If retrieving an existing player fails(exception thrown), create a new one
             // with their name
@@ -141,7 +152,7 @@ public class GameLogic {
             UI.printHeading(String.format(
                     "Welcome, %s! We're happy to have you here at Team Chip's Casino. Let's play some BlackJack!",
                     playerName));
-            UI.pressAnyKey();
+            UI.pressEnter();
         }
 
         while (!gameOver) {
@@ -187,13 +198,13 @@ public class GameLogic {
                 } else if (houseHand == player.getHand().total()) {
                     player.increaseEarnings(bets.remove(player.getName())); // House ties player. Bet returned to
                                                                             // player.
-                    UI.printHeading(String.format("Game ends in a DRAW between %s and the house!%n", player.getName()));
+                    UI.printHeading(String.format("Game ends in a DRAW between %s and the house!", player.getName()));
                 } else {
                     // Player beats house. Wins bet.
                     double winnings = bets.remove(player.getName());
                     player.increaseEarnings(winnings * 2);
                     house.setEarnings(house.getEarnings() - winnings);
-                    UI.printHeading(String.format("%s WINS %.2f!!!%n", player.getName(), (winnings * 2)));
+                    UI.printHeading(String.format("%s WINS %.2f!!!", player.getName(), (winnings * 2)));
                 }
             }
         }
@@ -201,7 +212,7 @@ public class GameLogic {
         for (Player player : playerList) {
             player.getHand().clear();
         }
-        UI.pressAnyKey();
+        UI.pressEnter();
     }
 
     private void houseActions() {
@@ -272,8 +283,8 @@ public class GameLogic {
     }
 
     private void showTable(Player player) {
-        // UI.clearConsole();
-        System.out.println("The House Hand:\n" + house.getHand().mask());
+        UI.clearConsole();
+        System.out.println("The House Hand with " + house.getHand().total() + ":\n" + house.getHand().mask());
         System.out.println(
                 player.getName() + "'s Hand with " + player.getHand().total() + ":\n" + player.getHand().show());
     }
@@ -316,7 +327,7 @@ public class GameLogic {
                     return false;
                 default:
                     System.out.println("That's not an option. Try again.");
-                    UI.pressAnyKey();
+                    UI.pressEnter();
             }
         }
     }
