@@ -156,7 +156,7 @@ public class GameLogic {
                 houseActions();
             }
             settlement();
-            // TODO Implement "Play Again?" dialogue
+            gameOver = !playAgain();
         }
         // TODO save current player list, exit game logic
     }
@@ -303,6 +303,21 @@ public class GameLogic {
             rank++;
             if (rank >= leaderboardMaxSize)
                 break;
+        }
+    }
+
+    private boolean playAgain() {
+        while (true) {
+            int choice = UI.readInt("Want to play again?\n1. Yes\n2. No", 2);
+            switch (choice) {
+                case 1:
+                    return true;
+                case 2:
+                    return false;
+                default:
+                    System.out.println("That's not an option. Try again.");
+                    UI.pressAnyKey();
+            }
         }
     }
 
