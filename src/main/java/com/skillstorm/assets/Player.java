@@ -10,9 +10,11 @@ public class Player {
     private String name;
     private double earnings; // TODO need to set default earnings aka starting cash
     private Hand hand = new Hand();
+    private final double DEFAULTSTARTINGEARNINGS = 500;
 
     public Player(String name) {
         this.name = name;
+        this.earnings = DEFAULTSTARTINGEARNINGS;
     }
 
     public Player(String name, double earnings) {
