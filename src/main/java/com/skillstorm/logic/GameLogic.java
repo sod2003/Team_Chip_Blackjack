@@ -227,11 +227,14 @@ public class GameLogic {
         if (house.getHand().total() == 21) {
             return true;
         } else {
+            boolean naturalPlayer = false;
             for (Player player : playerList) {
                 if (player.getHand().total() == 21) {
-                    return true;
+                    bets.put(player.getName(), bets.get(player.getName()) * 1.25);
+                    naturalPlayer = true;
                 }
             }
+            if (naturalPlayer) return true;
         }
         return false;
     }
