@@ -103,7 +103,8 @@ public class GameLogic {
             System.out.print("");
             double bet = 0.0;
             while ((bet <= 0.0) || (bet > player.getEarnings())) {
-                String reponse = UI.readStr("Place your bets: ");
+                String reponse = UI
+                        .readStr(String.format("You currently have $%.2f; Place your bet: ", player.getEarnings()));
                 try {
                     bet = Double.parseDouble(reponse);
                 } catch (NumberFormatException e) {
@@ -114,7 +115,7 @@ public class GameLogic {
             }
             bets.put(player.getName(), bet);
             player.decreaseEarnings(bet);
-            System.out.println(player.getName() + " places a bet of $" + bet);
+            System.out.printf("%s places a bet of $%.2f%n", player.getName(), bet);
         }
     }
 
@@ -176,19 +177,23 @@ public class GameLogic {
         } else {
             for (Player player : playerList) {
                 if (!bets.containsKey(player.getName())) {
+                    UI.printHeading(String.format("%s already busted before the game ended.", player.getName()));
                     continue; // Bet was previously removed by Player bust.
                 }
 
                 if (houseHand > player.getHand().total()) {
                     house.setEarnings(house.getEarnings() + bets.remove(player.getName())); // House earns player bet.
+                    UI.printHeading(String.format("The house beat %s and collected their bet.", player.getName()));
                 } else if (houseHand == player.getHand().total()) {
                     player.increaseEarnings(bets.remove(player.getName())); // House ties player. Bet returned to
                                                                             // player.
+                    UI.printHeading(String.format("Game ends in a DRAW between %s and the house!%n", player.getName()));
                 } else {
                     // Player beats house. Wins bet.
                     double winnings = bets.remove(player.getName());
                     player.increaseEarnings(winnings * 2);
                     house.setEarnings(house.getEarnings() - winnings);
+                    UI.printHeading(String.format("%s WINS %.2f!!!%n", player.getName(), (winnings * 2)));
                 }
             }
         }
@@ -196,11 +201,27 @@ public class GameLogic {
         for (Player player : playerList) {
             player.getHand().clear();
         }
+        UI.pressAnyKey();
     }
 
     private void houseActions() {
+        UI.printHeading("It is now the house's turn.");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         while (house.getHand().total() < 17) {
+            UI.clearConsole();
             house.getHand().hit(deck.draw());
+            for (Player player : playerList) {
+                showTable(player);
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -253,7 +274,8 @@ public class GameLogic {
     private void showTable(Player player) {
         // UI.clearConsole();
         System.out.println("The House Hand:\n" + house.getHand().mask());
-        System.out.println("Your Hand with " + player.getHand().total() + ":\n" + player.getHand().show());
+        System.out.println(
+                player.getName() + "'s Hand with " + player.getHand().total() + ":\n" + player.getHand().show());
     }
 
     public void printLeaderboard() {
