@@ -2,7 +2,10 @@ package com.skillstorm.logic;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.skillstorm.assets.Card;
 import com.skillstorm.assets.Deck;
@@ -17,6 +20,7 @@ import com.skillstorm.assets.Player;
 public class GameLogic {
 
     private ArrayList<Player> playerList = new ArrayList<>();
+    private Map<Player, Double> bets = new HashMap<Player, Double>();
     private House house = new House();
     private Deck deck = new Deck(Card.generateCards());
 
@@ -79,9 +83,24 @@ public class GameLogic {
         deck.shuffle();
     }
 
-    private void takeBets() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'takeBets'");
+    protected void takeBets() {
+        for (Player player : playerList) {
+            System.out.print("");
+            double bet = 0;
+            while ((bet <= 0) || (bet > player.getEarnings())) {
+                String reponse = UI.readStr("Place your bets: ");
+                try {
+                    bet = Double.parseDouble(reponse);
+                } catch (NumberFormatException e) {
+                    System.out.println("That's not a valid number.");
+                    UI.pressAnyKey();
+                    continue;
+                }
+            }
+            bets.putIfAbsent(player, bet);
+            player.decreaseEarnings(bet);
+            System.out.println(player.getName() + " places a bet of $" + bet);
+        }
     }
 
     public void startGame() {
