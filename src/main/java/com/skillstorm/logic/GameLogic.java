@@ -38,7 +38,7 @@ public class GameLogic {
      * @param playerToAdd
      */
     public void addLeaderboardPlayer(Player playerToAdd) {
-        playerList.add(playerToAdd);
+        leaderboardList.add(playerToAdd);
     }
 
     public ArrayList<Player> getPlayerList() {
@@ -99,13 +99,18 @@ public class GameLogic {
     public void startGame() {
         boolean gameOver = false;
 
-        // TODO Load method for leaderboard, take name input, create Player
+        // Load JSON save file to populate leaderboardList
         this.leaderboardList = Load.load();
+        // Take name input
         String playerName = UI.readStr("Please enter your name: ");
-        try{
+        try {
+            // If player with the same name is in the leaderboardList, add them to the
+            // active playerList
             playerList.add(Load.getReturningPlayer(playerName, leaderboardList));
-        }catch(NoSuchElementException e){
-            playerList.add(new Player(playerName))
+        } catch (NoSuchElementException e) {
+            // If retrieving an existing player fails(exception thrown), create a new one
+            // with their name
+            playerList.add(new Player(playerName));
         }
 
         while (!gameOver) {
