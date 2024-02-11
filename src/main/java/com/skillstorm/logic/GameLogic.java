@@ -129,10 +129,18 @@ public class GameLogic {
             // If player with the same name is in the leaderboardList, add them to the
             // active playerList
             playerList.add(Load.getReturningPlayer(playerName, leaderboardList));
+            UI.printHeading(String.format(
+                    "Welcome back, %s! Ready for some more BlackJack?",
+                    playerName));
+            UI.pressAnyKey();
         } catch (NoSuchElementException e) {
             // If retrieving an existing player fails(exception thrown), create a new one
             // with their name
             playerList.add(new Player(playerName));
+            UI.printHeading(String.format(
+                    "Welcome, %s! We're happy to have you here at Team Chip's Casino. Let's play some BlackJack!",
+                    playerName));
+            UI.pressAnyKey();
         }
 
         while (!gameOver) {
@@ -157,7 +165,8 @@ public class GameLogic {
         if (houseHand > 21) {
             UI.printHeading("House Busts! All remaining bets are winners.");
             for (Player player : playerList) {
-                // House busts. All players, besides those that bust during player turn, win bets.
+                // House busts. All players, besides those that bust during player turn, win
+                // bets.
                 if (bets.containsKey(player.getName())) {
                     double winnings = bets.remove(player.getName());
                     player.increaseEarnings(winnings * 2);
@@ -173,7 +182,8 @@ public class GameLogic {
                 if (houseHand > player.getHand().total()) {
                     house.setEarnings(house.getEarnings() + bets.remove(player.getName())); // House earns player bet.
                 } else if (houseHand == player.getHand().total()) {
-                    player.increaseEarnings(bets.remove(player.getName())); // House ties player. Bet returned to player.
+                    player.increaseEarnings(bets.remove(player.getName())); // House ties player. Bet returned to
+                                                                            // player.
                 } else {
                     // Player beats house. Wins bet.
                     double winnings = bets.remove(player.getName());
