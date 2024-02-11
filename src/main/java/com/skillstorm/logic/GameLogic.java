@@ -3,7 +3,6 @@ package com.skillstorm.logic;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Map;
 
@@ -146,9 +145,53 @@ public class GameLogic {
                     handlePlayerTurn(player);
                 }
             }
-            // TODO Handle House, Settlement
+            houseActions();
+            settlement();
+            // TODO Implement "Play Again?" dialogue
         }
         // TODO save current player list, exit game logic
+    }
+
+    private void settlement() {
+        int houseHand = house.getHand().total();
+        if (houseHand > 21) {
+            UI.printHeading("House Busts! All remaining bets are winners.");
+            for (Player player : playerList) {
+                // House busts. All players, besides those that bust during player turn, win bets.
+                if (bets.containsKey(player.getName())) {
+                    double winnings = bets.remove(player.getName());
+                    player.increaseEarnings(winnings * 2);
+                    house.setEarnings(house.getEarnings() - winnings);
+                }
+            }
+        } else {
+            for (Player player : playerList) {
+                if (!bets.containsKey(player.getName())) {
+                    continue; // Bet was previously removed by Player bust.
+                }
+
+                if (houseHand > player.getHand().total()) {
+                    house.setEarnings(house.getEarnings() + bets.remove(player.getName())); // House earns player bet.
+                } else if (houseHand == player.getHand().total()) {
+                    player.increaseEarnings(bets.remove(player.getName())); // House ties player. Bet returned to player.
+                } else {
+                    // Player beats house. Wins bet.
+                    double winnings = bets.remove(player.getName());
+                    player.increaseEarnings(winnings * 2);
+                    house.setEarnings(house.getEarnings() - winnings);
+                }
+            }
+        }
+        house.getHand().clear();
+        for (Player player : playerList) {
+            player.getHand().clear();
+        }
+    }
+
+    private void houseActions() {
+        while (house.getHand().total() < 17) {
+            house.getHand().hit(deck.draw());
+        }
     }
 
     protected void handlePlayerTurn(Player player) {
@@ -161,10 +204,7 @@ public class GameLogic {
                 house.setEarnings(house.getEarnings() + loss);
                 endTurn = true;
             } else if (player.getHand().total() == 21) {
-                System.out.println("JACKPOT! " + player.getName() + " has " + player.getHand().total() + ".");
-                double winnings = bets.remove(player.getName());
-                player.increaseEarnings(winnings * 2);
-                house.setEarnings(house.getEarnings() - winnings);
+                System.out.println("BLACKJACK! " + player.getName() + " has " + player.getHand().total() + ".");
                 endTurn = true;
             } else {
                 showTable(player);
