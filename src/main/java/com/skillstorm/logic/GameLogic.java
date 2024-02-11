@@ -2,7 +2,6 @@ package com.skillstorm.logic;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,7 @@ import com.skillstorm.assets.Player;
 public class GameLogic {
 
     private ArrayList<Player> playerList = new ArrayList<>();
-    private Map<Player, Double> bets = new HashMap<Player, Double>();
+    private Map<String, Double> bets = new HashMap<String, Double>();
     private House house = new House();
     private Deck deck = new Deck(Card.generateCards());
 
@@ -57,6 +56,11 @@ public class GameLogic {
         this.deck = deck;
     }
 
+    public void addBet(Player player, Double bet) {
+        bets.put(player.getName(), bet);
+        player.decreaseEarnings(bet);
+    }
+
     /**
      * Logic for dealing cards to everyone in the game, including the house.
      * Includes possibility of having multiple players.
@@ -86,8 +90,8 @@ public class GameLogic {
     protected void takeBets() {
         for (Player player : playerList) {
             System.out.print("");
-            double bet = 0;
-            while ((bet <= 0) || (bet > player.getEarnings())) {
+            double bet = 0.0;
+            while ((bet <= 0.0) || (bet > player.getEarnings())) {
                 String reponse = UI.readStr("Place your bets: ");
                 try {
                     bet = Double.parseDouble(reponse);
@@ -97,7 +101,7 @@ public class GameLogic {
                     continue;
                 }
             }
-            bets.putIfAbsent(player, bet);
+            bets.put(player.getName(), bet);
             player.decreaseEarnings(bet);
             System.out.println(player.getName() + " places a bet of $" + bet);
         }
@@ -122,40 +126,46 @@ public class GameLogic {
         // TODO save current player list, exit game logic
     }
 
-    private void handlePlayerTurn(Player player) {
+    protected void handlePlayerTurn(Player player) {
         boolean endTurn = false;
 
         while (!endTurn) {
             if (player.getHand().total() > 21) {
                 System.out.println("BUST! " + player.getName() + " has " + player.getHand().total() + ".");
-                // TODO Lose bet here
+                double loss = bets.remove(player.getName());
+                house.setEarnings(house.getEarnings() + loss);
                 endTurn = true;
             } else if (player.getHand().total() == 21) {
                 System.out.println("JACKPOT! " + player.getName() + " has " + player.getHand().total() + ".");
-                // TODO Win bet here
-            }
-            showTable();
-            printOptions();
-            int playerAction = 0; // TODO Take input from player for action
-            switch (playerAction) {
-                case 1:
-                    // TODO Hit Action
-                case 2:
-                    // TODO Stay Action
-                case 3:
-                    // TODO Split?
+                double winnings = bets.remove(player.getName());
+                player.increaseEarnings(winnings * 2);
+                house.setEarnings(house.getEarnings() - winnings);
+                endTurn = true;
+            } else {
+                showTable(player);
+                int playerAction = UI.readInt(printOptions(), 2);
+                switch (playerAction) {
+                    case 1:
+                        player.getHand().hit(deck.draw());
+                        break;
+                    case 2:
+                        endTurn = true;
+                        break;
+                    case 3:
+                        // TODO Split?
+                }
             }
         }
     }
 
-    private void printOptions() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'printOptions'");
+    private String printOptions() {
+        return "1. Hit\n2. Stay\n";
     }
 
-    private void showTable() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'showTable'");
+    private void showTable(Player player) {
+        // UI.clearConsole();
+        System.out.println("The House Hand:\n" + house.getHand().mask());
+        System.out.println("Your Hand with " + player.getHand().total() + ":\n" + player.getHand().show());
     }
 
     public void printLeaderboard(List<Player> playerList) {
