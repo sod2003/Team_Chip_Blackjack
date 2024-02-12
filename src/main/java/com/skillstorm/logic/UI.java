@@ -23,7 +23,7 @@ public class UI {
         do {
             try {
                 System.out.print(prompt);
-                input = Integer.parseInt(scanner.next());
+                input = Integer.parseInt(scanner.nextLine());
             } catch (Exception e) {
                 System.out.println("Please enter one of the available numbers!");
                 input = -1;
@@ -47,7 +47,7 @@ public class UI {
         do {
             try {
                 System.out.print(prompt);
-                input = scanner.next();
+                input = scanner.nextLine();
             } catch (Exception e) {
                 System.out.println("Please enter at least one valid character as your name.");
                 input = "";
@@ -90,9 +90,9 @@ public class UI {
      * Waits for the user to input any value and press enter. Gives them a chance to
      * read what is on the screen if needed.
      */
-    public static void pressAnyKey() {
-        System.out.print("\nEnter anything to continue>>>");
-        scanner.next();
+    public static void pressEnter() {
+        System.out.print("\n<<<Press \"ENTER\" to continue>>>");
+        scanner.nextLine();
         UI.clearConsole();
     }
 

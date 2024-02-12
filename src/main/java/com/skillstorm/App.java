@@ -35,7 +35,7 @@ public final class App {
                     System.out.println("Sorry, I don't recognize that input. Try again.");
             }
         }
-        System.out.println("Thanks for playing Team Chip's Blackjack Game! Logging you out now...");
+        UI.printHeading("Thanks for playing Team Chip's Blackjack Game! Logging you out now...");
     }
 
     /**

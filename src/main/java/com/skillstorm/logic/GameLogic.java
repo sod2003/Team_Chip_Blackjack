@@ -3,6 +3,7 @@ package com.skillstorm.logic;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Map;
 
@@ -91,6 +92,12 @@ public class GameLogic {
         }
         // Deal second card to house but leave it face down
         house.getHand().hit(deck.draw());
+        UI.printHeading("Dealing...");
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void shuffleDeck() {
@@ -103,22 +110,30 @@ public class GameLogic {
             System.out.print("");
             double bet = 0.0;
             while ((bet <= 0.0) || (bet > player.getEarnings())) {
-                String reponse = UI.readStr("Place your bets: ");
+                String reponse = UI
+                        .readStr(String.format("%s, you currently have $%.2f; Place your bet: ", player.getName(),
+                                player.getEarnings()));
                 try {
                     bet = Double.parseDouble(reponse);
                 } catch (NumberFormatException e) {
                     System.out.println("That's not a valid number.");
-                    UI.pressAnyKey();
+                    UI.pressEnter();
                     continue;
                 }
             }
             bets.put(player.getName(), bet);
             player.decreaseEarnings(bet);
-            System.out.println(player.getName() + " places a bet of $" + bet);
+            UI.printHeading(String.format("%s places a bet of $%.2f", player.getName(), bet));
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void startGame() {
+        playerList.clear();
         boolean gameOver = false;
 
         // Load JSON save file to populate leaderboardList
@@ -128,11 +143,14 @@ public class GameLogic {
         try {
             // If player with the same name is in the leaderboardList, add them to the
             // active playerList
+            // TODO here is where we are getting a duplicate reference to the player in
+            // playerList if they back out to the main menu and then re-enter the game.
+            // Currently clearing the playerList each game to solve this.
             playerList.add(Load.getReturningPlayer(playerName, leaderboardList));
             UI.printHeading(String.format(
                     "Welcome back, %s! Ready for some more BlackJack?",
                     playerName));
-            UI.pressAnyKey();
+            UI.pressEnter();
         } catch (NoSuchElementException e) {
             // If retrieving an existing player fails(exception thrown), create a new one
             // with their name
@@ -140,7 +158,7 @@ public class GameLogic {
             UI.printHeading(String.format(
                     "Welcome, %s! We're happy to have you here at Team Chip's Casino. Let's play some BlackJack!",
                     playerName));
-            UI.pressAnyKey();
+            UI.pressEnter();
         }
 
         while (!gameOver) {
@@ -155,7 +173,7 @@ public class GameLogic {
                 houseActions();
             }
             settlement();
-            // TODO Implement "Play Again?" dialogue
+            gameOver = !playAgain();
         }
         // TODO save current player list, exit game logic
     }
@@ -176,19 +194,23 @@ public class GameLogic {
         } else {
             for (Player player : playerList) {
                 if (!bets.containsKey(player.getName())) {
+                    UI.printHeading(String.format("%s already busted before the game ended.", player.getName()));
                     continue; // Bet was previously removed by Player bust.
                 }
 
                 if (houseHand > player.getHand().total()) {
                     house.setEarnings(house.getEarnings() + bets.remove(player.getName())); // House earns player bet.
+                    UI.printHeading(String.format("The house beat %s and collected their bet.", player.getName()));
                 } else if (houseHand == player.getHand().total()) {
                     player.increaseEarnings(bets.remove(player.getName())); // House ties player. Bet returned to
                                                                             // player.
+                    UI.printHeading(String.format("Game ends in a DRAW between %s and the house!", player.getName()));
                 } else {
                     // Player beats house. Wins bet.
                     double winnings = bets.remove(player.getName());
                     player.increaseEarnings(winnings * 2);
                     house.setEarnings(house.getEarnings() - winnings);
+                    UI.printHeading(String.format("%s WINS %.2f!!!", player.getName(), (winnings * 2)));
                 }
             }
         }
@@ -196,11 +218,31 @@ public class GameLogic {
         for (Player player : playerList) {
             player.getHand().clear();
         }
+        UI.pressEnter();
     }
 
     private void houseActions() {
+        UI.printHeading("It is now the house's turn.");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         while (house.getHand().total() < 17) {
+            UI.clearConsole();
+            UI.printHeading("The house hits.");
             house.getHand().hit(deck.draw());
+            for (Player player : playerList) {
+                showTable(player);
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        if (house.getHand().total() >= 17 && house.getHand().total() <= 21) {
+            UI.printHeading(String.format("The house stays with %d.", house.getHand().total()));
         }
     }
 
@@ -251,12 +293,14 @@ public class GameLogic {
     }
 
     private void showTable(Player player) {
-        // UI.clearConsole();
-        System.out.println("The House Hand:\n" + house.getHand().mask());
-        System.out.println("Your Hand with " + player.getHand().total() + ":\n" + player.getHand().show());
+        UI.clearConsole();
+        System.out.println("The House Hand: \n" + house.getHand().mask());
+        System.out.println(
+                player.getName() + "'s Hand with " + player.getHand().total() + ":\n" + player.getHand().show());
     }
 
     public void printLeaderboard() {
+        leaderboardList = Load.load();
         if (leaderboardList == null || leaderboardList.isEmpty()) {
             System.out.println("The leaderboard is empty.");
             return;
@@ -266,11 +310,9 @@ public class GameLogic {
         final int leaderboardMaxSize = 10;
 
         // sort the list of players in descending order based on their earnings
-        System.out.println("before sort" + leaderboardList);
-        Collections.sort(leaderboardList, (o1, o2) -> new PlayerComparator().compare(o1,
+        Collections.sort(leaderboardList, (o1, o2) -> new PlayerEarningsComparator().compare(o1,
                 o2));
         Collections.reverse(leaderboardList);
-        System.out.println("after sort" + leaderboardList);
 
         // print the sorted list to the screen
         System.out.println("###############################");
@@ -281,6 +323,22 @@ public class GameLogic {
             rank++;
             if (rank >= leaderboardMaxSize)
                 break;
+        }
+        UI.pressEnter();
+    }
+
+    private boolean playAgain() {
+        while (true) {
+            int choice = UI.readInt("Want to play again?\n1. Yes\n2. No", 2);
+            switch (choice) {
+                case 1:
+                    return true;
+                case 2:
+                    return false;
+                default:
+                    System.out.println("That's not an option. Try again.");
+                    UI.pressEnter();
+            }
         }
     }
 
