@@ -143,8 +143,9 @@ public class GameLogic {
         try {
             // If player with the same name is in the leaderboardList, add them to the
             // active playerList
-            // TODO here is where we need to check if player is already in playerList so
-            // that we don't create a duplicate
+            // TODO here is where we are getting a duplicate reference to the player in
+            // playerList if they back out to the main menu and then re-enter the game.
+            // Currently clearing the playerList each game to solve this.
             playerList.add(Load.getReturningPlayer(playerName, leaderboardList));
             UI.printHeading(String.format(
                     "Welcome back, %s! Ready for some more BlackJack?",
