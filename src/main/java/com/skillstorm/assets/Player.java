@@ -1,6 +1,8 @@
 package com.skillstorm.assets;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.json.simple.JSONObject;
 
@@ -8,8 +10,8 @@ import org.json.simple.JSONObject;
 public class Player {
 
     private String name;
-    private double earnings; // TODO need to set default earnings aka starting cash
-    private Hand hand = new Hand();
+    private double earnings;
+    private List<Hand> hands = new ArrayList<Hand>();
     private final double DEFAULTSTARTINGEARNINGS = 500;
 
     public Player(String name) {
@@ -46,12 +48,23 @@ public class Player {
         earnings += winnings;
     }
 
-    public Hand getHand() {
-        return hand;
+    public Hand getHand(int index) throws IllegalArgumentException {
+        if (hands.size() <= index) {
+            throw new IllegalArgumentException();
+        }
+        return hands.get(index);
     }
 
-    public void setHand(Hand hand) {
-        this.hand = hand;
+    public List<Hand> getAllHands() {
+        return hands;
+    }
+
+    public void addNewHand() {
+        hands.add(new Hand());
+    }
+
+    public void dropHands() {
+        hands.clear();
     }
 
     /**
@@ -73,7 +86,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player " + name + ", earnings: " + earnings + ", hand: " + hand + ".";
+        return "Player " + name + ", earnings: " + earnings + ", hand: " + hands + ".";
     }
 
     @Override
@@ -84,7 +97,7 @@ public class Player {
         long temp;
         temp = Double.doubleToLongBits(earnings);
         result = prime * result + (int) (temp ^ (temp >>> 32));
-        result = prime * result + ((hand == null) ? 0 : hand.hashCode());
+        result = prime * result + ((hands == null) ? 0 : hands.hashCode());
         return result;
     }
 
@@ -104,10 +117,10 @@ public class Player {
             return false;
         if (Double.doubleToLongBits(earnings) != Double.doubleToLongBits(other.earnings))
             return false;
-        if (hand == null) {
-            if (other.hand != null)
+        if (hands == null) {
+            if (other.hands != null)
                 return false;
-        } else if (!hand.equals(other.hand))
+        } else if (!hands.equals(other.hands))
             return false;
         return true;
     }

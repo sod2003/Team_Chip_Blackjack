@@ -11,7 +11,7 @@ public class TestPlayerActions {
         gl.addBet(sam, 20.00);
         gl.deal();
         System.out.println(sam);
-        gl.handlePlayerTurn(sam);
+        gl.handlePlayerTurn(sam, sam.getHand(0));
         System.out.println(sam);
         System.out.println(gl.getHouse());
     }

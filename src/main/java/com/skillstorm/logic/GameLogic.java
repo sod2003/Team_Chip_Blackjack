@@ -2,13 +2,11 @@ package com.skillstorm.logic;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.NoSuchElementException;
-import java.util.Map;
 
 import com.skillstorm.assets.Card;
 import com.skillstorm.assets.Deck;
+import com.skillstorm.assets.Hand;
 import com.skillstorm.assets.House;
 import com.skillstorm.assets.Player;
 
@@ -20,7 +18,6 @@ import com.skillstorm.assets.Player;
 public class GameLogic {
 
     private ArrayList<Player> playerList = new ArrayList<>();
-    private Map<String, Double> bets = new HashMap<String, Double>();
     private ArrayList<Player> leaderboardList = new ArrayList<>();
     private House house = new House();
     private Deck deck = new Deck(Card.generateCards());
@@ -69,8 +66,7 @@ public class GameLogic {
     }
 
     public void addBet(Player player, Double bet) {
-        bets.put(player.getName(), bet);
-        player.decreaseEarnings(bet);
+        player.getHand(0).setBet(bet);
     }
 
     /**
@@ -80,15 +76,15 @@ public class GameLogic {
     public void deal() {
         // Deal each player a card and set it to be face up
         for (Player player : playerList) {
-            player.getHand().hit(deck.draw());
-            player.getHand().getCardList().getFirst().setFaceUp(true);
+            player.getHand(0).hit(deck.draw());
+            player.getHand(0).getCardList().getFirst().setFaceUp(true);
         }
         // Deal house a card and set it to face up
         house.getHand().hit(deck.draw());
         house.getHand().getCardList().getFirst().setFaceUp(true);
         // Deal each player a second card but leave it face down
         for (Player player : playerList) {
-            player.getHand().hit(deck.draw());
+            player.getHand(0).hit(deck.draw());
         }
         // Deal second card to house but leave it face down
         house.getHand().hit(deck.draw());
@@ -121,8 +117,8 @@ public class GameLogic {
                     continue;
                 }
             }
-            bets.put(player.getName(), bet);
-            player.decreaseEarnings(bet);
+            player.addNewHand();
+            player.getHand(0).setBet(bet);
             UI.printHeading(String.format("%s places a bet of $%.2f", player.getName(), bet));
             try {
                 Thread.sleep(1000);
@@ -167,8 +163,10 @@ public class GameLogic {
             deal();
             if (!containsNaturals()) {
                 for (Player player : playerList) {
-                    // TODO Spliting / Doubling Down / Insurance
-                    handlePlayerTurn(player);
+                    for (Hand hand : player.getAllHands()) {
+                        // TODO Spliting / Doubling Down / Insurance
+                        handlePlayerTurn(player, hand);
+                    }
                 }
                 houseActions();
             }
@@ -185,38 +183,33 @@ public class GameLogic {
             for (Player player : playerList) {
                 // House busts. All players, besides those that bust during player turn, win
                 // bets.
-                if (bets.containsKey(player.getName())) {
-                    double winnings = bets.remove(player.getName());
-                    player.increaseEarnings(winnings * 2);
+                for (Hand hand : player.getAllHands()) {
+                    double winnings = hand.getBet();
+                    player.increaseEarnings(winnings);
                     house.setEarnings(house.getEarnings() - winnings);
                 }
             }
         } else {
             for (Player player : playerList) {
-                if (!bets.containsKey(player.getName())) {
-                    UI.printHeading(String.format("%s already busted before the game ended.", player.getName()));
-                    continue; // Bet was previously removed by Player bust.
-                }
-
-                if (houseHand > player.getHand().total()) {
-                    house.setEarnings(house.getEarnings() + bets.remove(player.getName())); // House earns player bet.
-                    UI.printHeading(String.format("The house beat %s and collected their bet.", player.getName()));
-                } else if (houseHand == player.getHand().total()) {
-                    player.increaseEarnings(bets.remove(player.getName())); // House ties player. Bet returned to
-                                                                            // player.
-                    UI.printHeading(String.format("Game ends in a DRAW between %s and the house!", player.getName()));
-                } else {
-                    // Player beats house. Wins bet.
-                    double winnings = bets.remove(player.getName());
-                    player.increaseEarnings(winnings * 2);
-                    house.setEarnings(house.getEarnings() - winnings);
-                    UI.printHeading(String.format("%s WINS %.2f!!!", player.getName(), (winnings * 2)));
+                for (Hand hand : player.getAllHands()) {
+                    if (houseHand > hand.total()) {
+                        house.setEarnings(house.getEarnings() + hand.getBet()); // House earns player bet.
+                        UI.printHeading(String.format("The house beat %s and collected their bet.", player.getName()));
+                    } else if (houseHand == hand.total()) {
+                        UI.printHeading(String.format("Game ends in a DRAW between %s and the house!", player.getName()));
+                    } else {
+                        // Player beats house. Wins bet.
+                        double winnings = hand.getBet();
+                        player.increaseEarnings(winnings);
+                        house.setEarnings(house.getEarnings() - winnings);
+                        UI.printHeading(String.format("%s WINS %.2f!!!", player.getName(), (winnings)));
+                    }
                 }
             }
         }
         house.getHand().clear();
         for (Player player : playerList) {
-            player.getHand().clear();
+            player.dropHands();
         }
         UI.pressEnter();
     }
@@ -233,7 +226,7 @@ public class GameLogic {
             UI.printHeading("The house hits.");
             house.getHand().hit(deck.draw());
             for (Player player : playerList) {
-                showTable(player);
+                showTable(player, player.getHand(0));
             }
             try {
                 Thread.sleep(1000);
@@ -246,24 +239,24 @@ public class GameLogic {
         }
     }
 
-    protected void handlePlayerTurn(Player player) {
+    protected void handlePlayerTurn(Player player, Hand hand) {
         boolean endTurn = false;
 
         while (!endTurn) {
-            if (player.getHand().total() > 21) {
-                System.out.println("BUST! " + player.getName() + " has " + player.getHand().total() + ".");
-                double loss = bets.remove(player.getName());
+            if (hand.total() > 21) {
+                System.out.println("BUST! " + player.getName() + " has " + hand.total() + ".");
+                double loss = hand.getBet();
                 house.setEarnings(house.getEarnings() + loss);
                 endTurn = true;
-            } else if (player.getHand().total() == 21) {
-                System.out.println("BLACKJACK! " + player.getName() + " has " + player.getHand().total() + ".");
+            } else if (hand.total() == 21) {
+                System.out.println("BLACKJACK! " + player.getName() + " has " + hand.total() + ".");
                 endTurn = true;
             } else {
-                showTable(player);
+                showTable(player, hand);
                 int playerAction = UI.readInt(printOptions(), 2);
                 switch (playerAction) {
                     case 1:
-                        player.getHand().hit(deck.draw());
+                        hand.hit(deck.draw());
                         break;
                     case 2:
                         endTurn = true;
@@ -277,11 +270,15 @@ public class GameLogic {
 
     private boolean containsNaturals() {
         if (house.getHand().total() == 21) {
+            System.out.println("House has a natural!");
             return true;
         } else {
             for (Player player : playerList) {
-                if (player.getHand().total() == 21) {
-                    bets.put(player.getName(), bets.get(player.getName()) * 1.25);
+                for (Hand hand : player.getAllHands()) {
+                    if (hand.total() == 21) {
+                        System.out.println(player.getName() + " has a natural!");
+                        hand.setBet(hand.getBet() * 1.25);
+                    }
                 }
             }
         }
@@ -292,11 +289,11 @@ public class GameLogic {
         return "1. Hit\n2. Stay\n";
     }
 
-    private void showTable(Player player) {
+    private void showTable(Player player, Hand hand) {
         UI.clearConsole();
         System.out.println("The House Hand: \n" + house.getHand().mask());
         System.out.println(
-                player.getName() + "'s Hand with " + player.getHand().total() + ":\n" + player.getHand().show());
+                player.getName() + "'s Hand with " + hand.total() + ":\n" + hand.show());
     }
 
     public void printLeaderboard() {
