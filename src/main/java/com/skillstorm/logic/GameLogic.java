@@ -300,6 +300,7 @@ public class GameLogic {
     }
 
     public void printLeaderboard() {
+        leaderboardList = Load.load();
         if (leaderboardList == null || leaderboardList.isEmpty()) {
             System.out.println("The leaderboard is empty.");
             return;
@@ -309,11 +310,9 @@ public class GameLogic {
         final int leaderboardMaxSize = 10;
 
         // sort the list of players in descending order based on their earnings
-        System.out.println("before sort" + leaderboardList);
         Collections.sort(leaderboardList, (o1, o2) -> new PlayerEarningsComparator().compare(o1,
                 o2));
         Collections.reverse(leaderboardList);
-        System.out.println("after sort" + leaderboardList);
 
         // print the sorted list to the screen
         System.out.println("###############################");
@@ -325,6 +324,7 @@ public class GameLogic {
             if (rank >= leaderboardMaxSize)
                 break;
         }
+        UI.pressEnter();
     }
 
     private boolean playAgain() {
