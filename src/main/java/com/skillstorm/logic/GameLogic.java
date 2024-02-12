@@ -3,6 +3,7 @@ package com.skillstorm.logic;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Map;
 
@@ -239,7 +240,9 @@ public class GameLogic {
                 e.printStackTrace();
             }
         }
-        UI.printHeading("The house stays.");
+        if (house.getHand().total() >= 17 && house.getHand().total() <= 21) {
+            UI.printHeading(String.format("The house stays with %d.", house.getHand().total()));
+        }
     }
 
     protected void handlePlayerTurn(Player player) {
@@ -290,7 +293,7 @@ public class GameLogic {
 
     private void showTable(Player player) {
         UI.clearConsole();
-        System.out.println("The House Hand with " + house.getHand().total() + ":\n" + house.getHand().mask());
+        System.out.println("The House Hand: \n" + house.getHand().mask());
         System.out.println(
                 player.getName() + "'s Hand with " + player.getHand().total() + ":\n" + player.getHand().show());
     }
