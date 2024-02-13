@@ -11,11 +11,11 @@ public class TestHand {
         gl.addActivePlayer(player);
         gl.getDeck().shuffle();
         gl.deal();
-        player.getHand().hit(gl.getDeck().draw());
-        player.getHand().hit(gl.getDeck().draw());
-        player.getHand().hit(gl.getDeck().draw());
-        System.out.println(player.getHand().show());
-        System.out.println(player.getHand().mask());
+        player.getHand(0).hit(gl.getDeck().draw());
+        player.getHand(0).hit(gl.getDeck().draw());
+        player.getHand(0).hit(gl.getDeck().draw());
+        System.out.println(player.getHand(0).show());
+        System.out.println(player.getHand(0).mask());
 
     }
 }

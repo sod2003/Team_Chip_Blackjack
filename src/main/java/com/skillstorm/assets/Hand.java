@@ -2,10 +2,11 @@ package com.skillstorm.assets;
 
 import java.util.LinkedList;
 
-// Hand Cards in hand
+// Hand Cards in hand, and associated bet.
 public class Hand {
 
     private LinkedList<Card> cards = new LinkedList<>();
+    private double bet;
 
     public Hand() {
     }
@@ -60,6 +61,14 @@ public class Hand {
 
     public void clear() {
         cards.clear();
+    }
+
+    public double getBet() {
+        return bet;
+    }
+
+    public void setBet(double bet) {
+        this.bet = bet;
     }
 
     @Override
