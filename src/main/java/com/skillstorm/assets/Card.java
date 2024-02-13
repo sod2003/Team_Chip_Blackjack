@@ -148,4 +148,9 @@ public class Card {
         List<Card> cards = Arrays.asList(new Card(Suit.DIAMOND, Rank.ACE), new Card(Suit.CLUB, Rank.ACE));
         return cards;
     }
+
+    public static List<Card> TestDouble() {
+        List<Card> cards = Arrays.asList(new Card(Suit.DIAMOND, Rank.FIVE), new Card(Suit.CLUB, Rank.SIX));
+        return cards;
+    }
 }

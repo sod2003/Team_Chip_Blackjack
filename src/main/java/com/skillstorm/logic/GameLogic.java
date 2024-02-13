@@ -164,7 +164,6 @@ public class GameLogic {
                 for (Player player : playerList) {
                     for (int i = 0; i < player.getAllHands().size(); i++) {
                         Hand hand = player.getHand(i);
-                        // TODO Spliting / Doubling Down / Insurance
                         handlePlayerTurn(player, hand);
                     }
                 }
@@ -261,8 +260,9 @@ public class GameLogic {
                 System.out.println("BLACKJACK! " + player.getName() + " has " + hand.total() + ".");
                 endTurn = true;
             } else {
+                if (endTurn) break;
                 showTable(player, hand);
-                int playerAction = UI.readInt(printOptions(hand), 3);
+                int playerAction = UI.readInt(printOptions(hand), 4);
                 switch (playerAction) {
                     case 1:
                         hand.hit(deck.draw());
@@ -273,6 +273,18 @@ public class GameLogic {
                     case 3:
                         if (Rules.checkSplit(hand)) {
                             player.addNewHand(hand.split());
+                        }
+                    case 4:
+                        if (Rules.checkDouble(hand) && player.getEarnings() > 0) {
+                            if (player.getEarnings() - hand.getBet() < hand.getBet()) {
+                                hand.setBet(hand.getBet() + (player.getEarnings() - hand.getBet()));
+                            } else {
+                                hand.setBet(hand.getBet() * 2.0);
+                            }
+                            hand.setBet(hand.getBet() * 2);
+                            hand.hit(deck.draw()); // Allowed one card for doubling down
+                            endTurn = true;
+                            continue; // Guarantees a check for Bust before settlement
                         }
                 }
             }
@@ -299,6 +311,7 @@ public class GameLogic {
     private String printOptions(Hand hand) {
         String str = "1. Hit\n2. Stay\n";
         if (Rules.checkSplit(hand)) str += "3. Split\n";
+        if (Rules.checkDouble(hand)) str += "4. Double\n";
         return str;
     }
 
