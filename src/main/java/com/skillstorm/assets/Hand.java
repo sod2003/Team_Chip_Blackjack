@@ -51,8 +51,13 @@ public class Hand {
         cards.add(card);
     }
 
-    public void split() {
-        // TODO add split method to Hand
+    public Hand split() {
+        Card splitCard = cards.removeLast();
+        LinkedList<Card> secondStack = new LinkedList<>();
+        secondStack.add(splitCard);
+        Hand newHand = new Hand(secondStack);
+        newHand.setBet(getBet());
+        return newHand;
     }
 
     public void stay() {

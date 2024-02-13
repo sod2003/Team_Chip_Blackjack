@@ -9,6 +9,7 @@ import com.skillstorm.assets.Deck;
 import com.skillstorm.assets.Hand;
 import com.skillstorm.assets.House;
 import com.skillstorm.assets.Player;
+import com.skillstorm.assets.Rank;
 
 /*
  * A class for managing the overall logic of the game.
@@ -160,10 +161,11 @@ public class GameLogic {
             takeBets();
             shuffleDeck();
             deal();
+            if (Rules.checkInsurance(house.getHand())) {insuranceBets();}
             if (!containsNaturals()) {
                 for (Player player : playerList) {
-                    for (Hand hand : player.getAllHands()) {
-                        // TODO Spliting / Doubling Down / Insurance
+                    for (int i = 0; i < player.getAllHands().size(); i++) {
+                        Hand hand = player.getHand(i);
                         handlePlayerTurn(player, hand);
                     }
                 }
@@ -173,6 +175,31 @@ public class GameLogic {
             gameOver = !playAgain();
         }
         // TODO save current player list, exit game logic
+    }
+
+    private void insuranceBets() {
+        for (Player player : playerList) {
+            boolean betLogic = true;
+            while (betLogic) {
+                String betCeilingStr = String.format("%.2f%n", player.getHand(0).getBet() / 2.0);
+                String answer = UI.readStr("Dealer is showing an Ace. Want to take an insurance bet of up to $" + betCeilingStr + "? (Y or N)");
+                switch (answer.toUpperCase().charAt(0)) {
+                    case 'Y':
+                        boolean takeBetFlag = true;
+                        while (takeBetFlag) {
+                            String betString = UI.readStr("Enter a number between 0.0 and " + betCeilingStr);
+                            if ((Double.valueOf(betString) instanceof Double) && Double.parseDouble(betString) > 0.0  
+                                && Double.parseDouble(betString) <= (player.getHand(0).getBet() / 2.0)) {
+                                player.setInsurance(Double.parseDouble(betString));
+                                takeBetFlag = false;
+                            };
+                        }
+                    case 'N':
+                        betLogic = false;
+                        break;
+                }
+            }
+        }
     }
 
     private void settlement() {
@@ -193,7 +220,8 @@ public class GameLogic {
             }
         } else {
             for (Player player : playerList) {
-                for (Hand hand : player.getAllHands()) {
+                for (int i = 0; i < player.getAllHands().size(); i++) {
+                    Hand hand = player.getHand(i);
                     if (houseHand > hand.total()) {
                         house.setEarnings(house.getEarnings() + hand.getBet()); // House earns player bet.
                         player.decreaseEarnings(hand.getBet());
@@ -215,6 +243,7 @@ public class GameLogic {
         house.getHand().clear();
         for (Player player : playerList) {
             player.dropHands();
+            player.setFirstHand(true);
         }
         UI.pressEnter();
     }
@@ -259,8 +288,9 @@ public class GameLogic {
                 System.out.println("BLACKJACK! " + player.getName() + " has " + hand.total() + ".");
                 endTurn = true;
             } else {
+                if (endTurn) break;
                 showTable(player, hand);
-                int playerAction = UI.readInt(printOptions(), 2);
+                int playerAction = UI.readInt(printOptions(player, hand), 4);
                 switch (playerAction) {
                     case 1:
                         hand.hit(deck.draw());
@@ -269,22 +299,50 @@ public class GameLogic {
                         endTurn = true;
                         break;
                     case 3:
-                        // TODO Split?
+                        if (Rules.checkSplit(hand)) {
+                            player.addNewHand(hand.split());
+                        }
+                    case 4:
+                        if (Rules.checkDouble(hand) && player.getEarnings() > 0 && player.firstHand()) {
+                            if (player.getEarnings() - hand.getBet() < hand.getBet()) {
+                                System.out.println("You don't have enough funds to double your bet.");
+                            } else {
+                                hand.setBet(hand.getBet() * 2.0);
+                                hand.hit(deck.draw()); // Allowed one card for doubling down
+                                endTurn = true;
+                                continue; // Guarantees a check for Bust before settlement
+                            }
+                        }
                 }
             }
         }
+        player.setFirstHand(false);
     }
 
     private boolean containsNaturals() {
         if (house.getHand().total() == 21) {
             System.out.println("House has a natural!");
+            if (house.getHand().getCardList().getFirst().getRank() == Rank.ACE) {
+                System.out.println("House pays out insurance bets to players.");
+                for (Player player : playerList) {
+                    house.setEarnings(house.getEarnings() - player.getInsurance());
+                    player.winInsurance();
+                }
+            }
             return true;
         } else {
             for (Player player : playerList) {
+                if (house.getHand().getCardList().getFirst().getRank() == Rank.ACE) {
+                    if (player.getInsurance() > 0.0) {
+                        System.out.println("Player loses insurance bet of " + player.getInsurance());
+                        house.setEarnings(house.getEarnings() + player.getInsurance());
+                        player.loseInsurance();
+                    }
+                }
                 for (Hand hand : player.getAllHands()) {
                     if (hand.total() == 21) {
                         System.out.println(player.getName() + " has a natural!");
-                        hand.setBet(hand.getBet() * 1.25);
+                        hand.setBet(hand.getBet() * 1.5);
                     }
                 }
             }
@@ -292,8 +350,11 @@ public class GameLogic {
         return false;
     }
 
-    private String printOptions() {
-        return "1. Hit\n2. Stay\n";
+    private String printOptions(Player player, Hand hand) {
+        String str = "1. Hit\n2. Stay\n";
+        if (Rules.checkSplit(hand)) str += "3. Split\n";
+        if (player.firstHand() && Rules.checkDouble(hand)) str += "4. Double\n";
+        return str;
     }
 
     private void showTable(Player player, Hand hand) {

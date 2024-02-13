@@ -1,5 +1,8 @@
 package com.skillstorm.assets;
 
+import java.util.Arrays;
+import java.util.List;
+
 // The Card class, not specifically mentioned in the requirements, but it's a good design decision to delegate.
 
 public class Card {
@@ -139,5 +142,15 @@ public class Card {
     @Override
     public String toString() {
         return rank + " of " + suit;
+    }
+
+    public static List<Card> TestCardSplit() {
+        List<Card> cards = Arrays.asList(new Card(Suit.DIAMOND, Rank.ACE), new Card(Suit.CLUB, Rank.ACE));
+        return cards;
+    }
+
+    public static List<Card> TestDouble() {
+        List<Card> cards = Arrays.asList(new Card(Suit.DIAMOND, Rank.FIVE), new Card(Suit.CLUB, Rank.SIX));
+        return cards;
     }
 }
