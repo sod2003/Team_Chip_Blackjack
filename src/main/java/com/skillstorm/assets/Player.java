@@ -65,6 +65,10 @@ public class Player {
         hands.add(new Hand());
     }
 
+    public void addNewHand(Hand hand) {
+        hands.add(hand);
+    }
+
     public void dropHands() {
         hands.clear();
         addNewHand();
