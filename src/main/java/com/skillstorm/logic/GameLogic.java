@@ -160,6 +160,7 @@ public class GameLogic {
             takeBets();
             shuffleDeck();
             deal();
+            if (Rules.checkInsurance(house.getHand())) {insuranceBets();}
             if (!containsNaturals()) {
                 for (Player player : playerList) {
                     for (int i = 0; i < player.getAllHands().size(); i++) {
@@ -173,6 +174,22 @@ public class GameLogic {
             gameOver = !playAgain();
         }
         // TODO save current player list, exit game logic
+    }
+
+    private void insuranceBets() {
+        for (Player player : playerList) {
+            boolean betLogic = true;
+            while (betLogic) {
+                String answer = UI.readStr("Dealer is showing an Ace. Want to take an insurance bet of up to " + (player.getHand(0).getBet() / 2.0));
+                switch (answer.toUpperCase().charAt(0)) {
+                    case 'Y':
+                        // TODO Take a bet from 0.0 to half the original bet amount.
+                    case 'N':
+                        betLogic = false;
+                        break;
+                }
+            }
+        }
     }
 
     private void settlement() {
