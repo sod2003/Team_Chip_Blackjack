@@ -9,6 +9,7 @@ import com.skillstorm.assets.Deck;
 import com.skillstorm.assets.Hand;
 import com.skillstorm.assets.House;
 import com.skillstorm.assets.Player;
+import com.skillstorm.assets.Rank;
 
 /*
  * A class for managing the overall logic of the game.
@@ -180,10 +181,19 @@ public class GameLogic {
         for (Player player : playerList) {
             boolean betLogic = true;
             while (betLogic) {
-                String answer = UI.readStr("Dealer is showing an Ace. Want to take an insurance bet of up to " + (player.getHand(0).getBet() / 2.0));
+                String betCeilingStr = String.format("%.2f%n", player.getHand(0).getBet() / 2.0);
+                String answer = UI.readStr("Dealer is showing an Ace. Want to take an insurance bet of up to $" + betCeilingStr + "? (Y or N)");
                 switch (answer.toUpperCase().charAt(0)) {
                     case 'Y':
-                        // TODO Take a bet from 0.0 to half the original bet amount.
+                        boolean takeBetFlag = true;
+                        while (takeBetFlag) {
+                            String betString = UI.readStr("Enter a number between 0.0 and " + betCeilingStr);
+                            if ((Double.valueOf(betString) instanceof Double) && Double.parseDouble(betString) > 0.0  
+                                && Double.parseDouble(betString) <= (player.getHand(0).getBet() / 2.0)) {
+                                player.setInsurance(Double.parseDouble(betString));
+                                takeBetFlag = false;
+                            };
+                        }
                     case 'N':
                         betLogic = false;
                         break;
@@ -233,6 +243,7 @@ public class GameLogic {
         house.getHand().clear();
         for (Player player : playerList) {
             player.dropHands();
+            player.setFirstHand(true);
         }
         UI.pressEnter();
     }
@@ -279,7 +290,7 @@ public class GameLogic {
             } else {
                 if (endTurn) break;
                 showTable(player, hand);
-                int playerAction = UI.readInt(printOptions(hand), 4);
+                int playerAction = UI.readInt(printOptions(player, hand), 4);
                 switch (playerAction) {
                     case 1:
                         hand.hit(deck.draw());
@@ -292,7 +303,7 @@ public class GameLogic {
                             player.addNewHand(hand.split());
                         }
                     case 4:
-                        if (Rules.checkDouble(hand) && player.getEarnings() > 0) {
+                        if (Rules.checkDouble(hand) && player.getEarnings() > 0 && player.firstHand()) {
                             if (player.getEarnings() - hand.getBet() < hand.getBet()) {
                                 hand.setBet(hand.getBet() + (player.getEarnings() - hand.getBet()));
                             } else {
@@ -306,14 +317,29 @@ public class GameLogic {
                 }
             }
         }
+        player.setFirstHand(false);
     }
 
     private boolean containsNaturals() {
         if (house.getHand().total() == 21) {
             System.out.println("House has a natural!");
+            if (house.getHand().getCardList().getFirst().getRank() == Rank.ACE) {
+                System.out.println("House pays out insurance bets to players.");
+                for (Player player : playerList) {
+                    house.setEarnings(house.getEarnings() - player.getInsurance());
+                    player.winInsurance();
+                }
+            }
             return true;
         } else {
             for (Player player : playerList) {
+                if (house.getHand().getCardList().getFirst().getRank() == Rank.ACE) {
+                    if (player.getInsurance() > 0.0) {
+                        System.out.println("Player loses insurance bet of " + player.getInsurance());
+                        house.setEarnings(house.getEarnings() + player.getInsurance());
+                        player.loseInsurance();
+                    }
+                }
                 for (Hand hand : player.getAllHands()) {
                     if (hand.total() == 21) {
                         System.out.println(player.getName() + " has a natural!");
@@ -325,10 +351,10 @@ public class GameLogic {
         return false;
     }
 
-    private String printOptions(Hand hand) {
+    private String printOptions(Player player, Hand hand) {
         String str = "1. Hit\n2. Stay\n";
         if (Rules.checkSplit(hand)) str += "3. Split\n";
-        if (Rules.checkDouble(hand)) str += "4. Double\n";
+        if (player.firstHand() && Rules.checkDouble(hand)) str += "4. Double\n";
         return str;
     }
 

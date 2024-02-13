@@ -11,6 +11,8 @@ public class Player {
 
     private String name;
     private double earnings;
+    private double insurance = 0.0;
+    private boolean firstHand = true;
     private List<Hand> hands = new ArrayList<Hand>();
     private final double DEFAULTSTARTINGEARNINGS = 500;
 
@@ -34,6 +36,14 @@ public class Player {
         this.name = name;
     }
 
+    public boolean firstHand() {
+        return firstHand;
+    }
+
+    public void setFirstHand(boolean bool) {
+        firstHand = bool;
+    }
+
     public double getEarnings() {
         return earnings;
     }
@@ -48,6 +58,24 @@ public class Player {
 
     public void increaseEarnings(double winnings) {
         earnings += winnings;
+    }
+
+    public void setInsurance(double bet) {
+        insurance = bet;
+    }
+
+    public double getInsurance() {
+        return insurance;
+    }
+
+    public void loseInsurance() {
+        decreaseEarnings(insurance);
+        insurance = 0.0;
+    }
+
+    public void winInsurance() {
+        increaseEarnings(insurance);
+        insurance = 0.0;
     }
 
     public Hand getHand(int index) throws IllegalArgumentException {
