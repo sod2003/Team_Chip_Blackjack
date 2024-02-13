@@ -17,11 +17,13 @@ public class Player {
     public Player(String name) {
         this.name = name;
         this.earnings = DEFAULTSTARTINGEARNINGS;
+        addNewHand();
     }
 
     public Player(String name, double earnings) {
         this.name = name;
         this.earnings = earnings;
+        addNewHand();
     }
 
     public String getName() {
@@ -49,7 +51,7 @@ public class Player {
     }
 
     public Hand getHand(int index) throws IllegalArgumentException {
-        if (hands.size() <= index) {
+        if (hands.size() <= index || index < 0) {
             throw new IllegalArgumentException();
         }
         return hands.get(index);
@@ -65,6 +67,7 @@ public class Player {
 
     public void dropHands() {
         hands.clear();
+        addNewHand();
     }
 
     /**

@@ -117,7 +117,6 @@ public class GameLogic {
                     continue;
                 }
             }
-            player.addNewHand();
             player.getHand(0).setBet(bet);
             UI.printHeading(String.format("%s places a bet of $%.2f", player.getName(), bet));
             try {
@@ -184,6 +183,9 @@ public class GameLogic {
                 // House busts. All players, besides those that bust during player turn, win
                 // bets.
                 for (Hand hand : player.getAllHands()) {
+                    if (hand.getBet() == 0.0) {
+                        continue;
+                    }
                     double winnings = hand.getBet();
                     player.increaseEarnings(winnings);
                     house.setEarnings(house.getEarnings() - winnings);
@@ -194,15 +196,18 @@ public class GameLogic {
                 for (Hand hand : player.getAllHands()) {
                     if (houseHand > hand.total()) {
                         house.setEarnings(house.getEarnings() + hand.getBet()); // House earns player bet.
+                        player.decreaseEarnings(hand.getBet());
                         UI.printHeading(String.format("The house beat %s and collected their bet.", player.getName()));
                     } else if (houseHand == hand.total()) {
                         UI.printHeading(String.format("Game ends in a DRAW between %s and the house!", player.getName()));
                     } else {
-                        // Player beats house. Wins bet.
-                        double winnings = hand.getBet();
-                        player.increaseEarnings(winnings);
-                        house.setEarnings(house.getEarnings() - winnings);
-                        UI.printHeading(String.format("%s WINS %.2f!!!", player.getName(), (winnings)));
+                        if (hand.total() <= 21) {
+                            // Player beats house. Wins bet.
+                            double winnings = hand.getBet();
+                            player.increaseEarnings(winnings);
+                            house.setEarnings(house.getEarnings() - winnings);
+                            UI.printHeading(String.format("%s WINS %.2f!!!", player.getName(), (winnings)));
+                        }
                     }
                 }
             }
@@ -246,6 +251,8 @@ public class GameLogic {
             if (hand.total() > 21) {
                 System.out.println("BUST! " + player.getName() + " has " + hand.total() + ".");
                 double loss = hand.getBet();
+                player.decreaseEarnings(loss);
+                hand.setBet(0); // Zeroing out the bet.
                 house.setEarnings(house.getEarnings() + loss);
                 endTurn = true;
             } else if (hand.total() == 21) {

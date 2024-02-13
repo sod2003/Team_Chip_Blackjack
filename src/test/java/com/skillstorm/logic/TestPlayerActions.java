@@ -8,7 +8,7 @@ public class TestPlayerActions {
         gl.getDeck().shuffle();
         Player sam = new Player("Sam", 20.00);
         gl.addActivePlayer(sam);
-        gl.addBet(sam, 20.00);
+        sam.getHand(0).setBet(20);
         gl.deal();
         System.out.println(sam);
         gl.handlePlayerTurn(sam, sam.getHand(0));
