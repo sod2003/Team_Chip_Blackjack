@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -14,7 +15,7 @@ import com.skillstorm.assets.Player;
 public class Load {
 
     private static String fileName = "BlackjackPlayers.json";
-    private static String path = "./";
+    private static String path = "src/main/resources/";
 
     /**
      * Reads previous player data from a JSON file and returns it as an ArrayList of
@@ -33,9 +34,10 @@ public class Load {
 
         // if leaderboard json file doesn't exist, return a blank arraylist
         if (!jsonFile.exists()) {
-            System.out.println("file exists");
+            System.out.println("No previous save file found. Creating save...");
             return new ArrayList<Player>();
         }
+
         // read from JSON file
         try (BufferedReader reader = new BufferedReader(new FileReader(path +
                 fileName))) {
@@ -54,6 +56,12 @@ public class Load {
         return newPlayerList;
     }
 
+    /**
+     * Converts a JSONArray from the save file to an ArrayList of previous Players.
+     * 
+     * @param JSONPlayerList
+     * @return
+     */
     public static ArrayList<Player> convertJSONArrayToPlayerList(JSONArray JSONPlayerList) {
         ArrayList<Player> newPlayerList = new ArrayList<>();
         for (Object o : JSONPlayerList) {
@@ -77,24 +85,26 @@ public class Load {
     }
 
     /**
-     * Checks an ArrayList for an existing player and returns a reference to the
+     * /**
+     * Checks an ArrayList (intended for the leaderboard) for an existing player and
+     * returns a reference to the
      * player object if found or null if not found
      * 
      * @param name
      * @param leaderboardList
      * @return
      */
-    public static Player getReturningPlayer(String name, ArrayList<Player> leaderboardList) {
+    public static Player getReturningPlayer(String name, ArrayList<Player> leaderboardList)
+            throws NoSuchElementException {
 
         for (Player p : leaderboardList) {
             if (p.getName().trim().equalsIgnoreCase(name.trim())) {
                 return p;
-            } else {
-                continue;
             }
         }
-
-        return new Player(name);
+        // if no player is found in the list matching the input name, throw an exception
+        // (create new player in the catch block)
+        throw new NoSuchElementException("No previous player found. Create a new one.");
     }
 
     // /**

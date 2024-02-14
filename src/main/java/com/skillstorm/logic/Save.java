@@ -12,7 +12,7 @@ import org.json.simple.*;
 public class Save {
 
     private static String fileName = "BlackjackPlayers.json";
-    private static String path = "./";
+    private static String path = "src/main/resources/";
 
     /**
      * Saves the player object and all previous player data into a .json file.
