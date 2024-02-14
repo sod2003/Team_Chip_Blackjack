@@ -55,6 +55,12 @@ public class Load {
         return newPlayerList;
     }
 
+    /**
+     * Converts a JSONArray from the save file to an ArrayList of previous Players.
+     * 
+     * @param JSONPlayerList
+     * @return
+     */
     public static ArrayList<Player> convertJSONArrayToPlayerList(JSONArray JSONPlayerList) {
         ArrayList<Player> newPlayerList = new ArrayList<>();
         for (Object o : JSONPlayerList) {
