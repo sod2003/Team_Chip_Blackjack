@@ -15,7 +15,7 @@ import com.skillstorm.assets.Player;
 public class Load {
 
     private static String fileName = "BlackjackPlayers.json";
-    private static String path = "./";
+    private static String path = "src/main/resources/";
 
     /**
      * Reads previous player data from a JSON file and returns it as an ArrayList of
@@ -34,9 +34,10 @@ public class Load {
 
         // if leaderboard json file doesn't exist, return a blank arraylist
         if (!jsonFile.exists()) {
-            System.out.println("file exists");
+            System.out.println("No previous save file found. Creating save...");
             return new ArrayList<Player>();
         }
+
         // read from JSON file
         try (BufferedReader reader = new BufferedReader(new FileReader(path +
                 fileName))) {

@@ -318,7 +318,8 @@ public class GameLogic {
                     case 4:
                         if (Rules.checkDouble(hand) && player.getEarnings() > 0 && player.firstHand()) {
                             if (player.getEarnings() - hand.getBet() < hand.getBet()) {
-                                System.out.println("You don't have enough funds to double your bet.");
+                                UI.printHeading("Sorry, you don't have enough funds to double your bet.");
+                                UI.pressEnter();
                             } else {
                                 hand.setBet(hand.getBet() * 2.0);
                                 hand.hit(deck.draw()); // Allowed one card for doubling down
