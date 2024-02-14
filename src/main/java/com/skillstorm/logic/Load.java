@@ -1,9 +1,9 @@
 package com.skillstorm.logic;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -14,7 +14,7 @@ import com.skillstorm.assets.Player;
 public class Load {
 
     private static String fileName = "BlackjackPlayers.json";
-    private static String path = "";
+    private static String path = "./";
 
     /**
      * Reads previous player data from a JSON file and returns it as an ArrayList of
@@ -28,6 +28,14 @@ public class Load {
         // JSONArray to hold info from JSON file
         JSONArray playerJSONArray = new JSONArray();
 
+        // file object to use to check if json leaderboard file exists
+        File jsonFile = new File(path + fileName);
+
+        // if leaderboard json file doesn't exist, return a blank arraylist
+        if (!jsonFile.exists()) {
+            System.out.println("file exists");
+            return new ArrayList<Player>();
+        }
         // read from JSON file
         try (BufferedReader reader = new BufferedReader(new FileReader(path +
                 fileName))) {
@@ -36,7 +44,6 @@ public class Load {
             // Store object from reading JSON file in JSONArray
             playerJSONArray = (JSONArray) obj;
             // report on results
-            // System.out.println("json: " + playerJSONArray);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,19 +84,17 @@ public class Load {
      * @param leaderboardList
      * @return
      */
-    public static Player getReturningPlayer(String name, ArrayList<Player> leaderboardList)
-            throws NoSuchElementException {
+    public static Player getReturningPlayer(String name, ArrayList<Player> leaderboardList) {
 
         for (Player p : leaderboardList) {
-            if (p.getName().equals(name)) {
+            if (p.getName().trim().equalsIgnoreCase(name.trim())) {
                 return p;
             } else {
-                throw new NoSuchElementException(
-                        "Player does not already exist in the leaderboard. Create a new player.");
+                continue;
             }
         }
 
-        return null;
+        return new Player(name);
     }
 
     // /**

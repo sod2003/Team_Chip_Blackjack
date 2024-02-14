@@ -21,19 +21,18 @@ public class Save {
      * @param leaderboardList
      */
     @SuppressWarnings("unchecked")
-    public static void save(Player player, ArrayList<Player> leaderboardList) {
+    public static void save(ArrayList<Player> playerList, ArrayList<Player> leaderboardList) {
 
         // convert player to JSONOBject and if not in the current JSONArray of existing
         // players, they are added with their current state
         JSONArray playersJsonArray = new JSONArray();
 
         // if player's name is not in namesList, add them to playerArray
-        if (!leaderboardList.contains(player)) {
-            leaderboardList.add(player);
+        for (Player plyr : playerList) {
+            if (!leaderboardList.contains(plyr)) {
+                leaderboardList.add(plyr);
+            }
         }
-
-        // print playerArray for debug purposes
-        System.out.println(leaderboardList);
 
         // convert each player in the playerArray to a JSONObject and store them in a
         // JSONArray
@@ -46,7 +45,9 @@ public class Save {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(path +
                 fileName))) {
             playersJsonArray.writeJSONString(writer);
-            System.out.println("Player data saved.");
+            UI.printHeading("Player data saved.");
+            Thread.sleep(1000);
+            UI.clearConsole();
         } catch (Exception e) {
             e.printStackTrace();
         }

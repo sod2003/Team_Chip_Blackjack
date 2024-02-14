@@ -60,10 +60,6 @@ public class Hand {
         return newHand;
     }
 
-    public void stay() {
-        // TODO add stay method to hand
-    }
-
     public void clear() {
         cards.clear();
     }

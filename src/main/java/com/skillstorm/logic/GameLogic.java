@@ -106,6 +106,15 @@ public class GameLogic {
         for (Player player : playerList) {
             System.out.print("");
             double bet = 0.0;
+            double loan = 100.00;
+            // give player a "loan" if they dont have any earnings left, just to keep the
+            // game going
+            if (player.getEarnings() <= 0.0) {
+                player.setEarnings(loan);
+                UI.printHeading(String.format(
+                        "%s, we noticed that you're out of money. We have generously granted you a loan of $%.2f...with a 40%% interest rate.",
+                        player.getName(), loan));
+            }
             while ((bet <= 0.0) || (bet > player.getEarnings())) {
                 String reponse = UI
                         .readStr(String.format("%s, you currently have $%.2f; Place your bet: ", player.getName(),
@@ -139,9 +148,6 @@ public class GameLogic {
         try {
             // If player with the same name is in the leaderboardList, add them to the
             // active playerList
-            // TODO here is where we are getting a duplicate reference to the player in
-            // playerList if they back out to the main menu and then re-enter the game.
-            // Currently clearing the playerList each game to solve this.
             playerList.add(Load.getReturningPlayer(playerName, leaderboardList));
             UI.printHeading(String.format(
                     "Welcome back, %s! Ready for some more BlackJack?",
@@ -161,7 +167,9 @@ public class GameLogic {
             takeBets();
             shuffleDeck();
             deal();
-            if (Rules.checkInsurance(house.getHand())) {insuranceBets();}
+            if (Rules.checkInsurance(house.getHand())) {
+                insuranceBets();
+            }
             if (!containsNaturals()) {
                 for (Player player : playerList) {
                     for (int i = 0; i < player.getAllHands().size(); i++) {
@@ -173,8 +181,10 @@ public class GameLogic {
             }
             settlement();
             gameOver = !playAgain();
+
+            // save current player list, exit game logic
+            Save.save(playerList, leaderboardList);
         }
-        // TODO save current player list, exit game logic
     }
 
     private void insuranceBets() {
@@ -182,17 +192,19 @@ public class GameLogic {
             boolean betLogic = true;
             while (betLogic) {
                 String betCeilingStr = String.format("%.2f%n", player.getHand(0).getBet() / 2.0);
-                String answer = UI.readStr("Dealer is showing an Ace. Want to take an insurance bet of up to $" + betCeilingStr + "? (Y or N)");
+                String answer = UI.readStr("Dealer is showing an Ace. Want to take an insurance bet of up to $"
+                        + betCeilingStr + "? (Y or N)");
                 switch (answer.toUpperCase().charAt(0)) {
                     case 'Y':
                         boolean takeBetFlag = true;
                         while (takeBetFlag) {
                             String betString = UI.readStr("Enter a number between 0.0 and " + betCeilingStr);
-                            if ((Double.valueOf(betString) instanceof Double) && Double.parseDouble(betString) > 0.0  
-                                && Double.parseDouble(betString) <= (player.getHand(0).getBet() / 2.0)) {
+                            if ((Double.valueOf(betString) instanceof Double) && Double.parseDouble(betString) > 0.0
+                                    && Double.parseDouble(betString) <= (player.getHand(0).getBet() / 2.0)) {
                                 player.setInsurance(Double.parseDouble(betString));
                                 takeBetFlag = false;
-                            };
+                            }
+                            ;
                         }
                     case 'N':
                         betLogic = false;
@@ -227,7 +239,8 @@ public class GameLogic {
                         player.decreaseEarnings(hand.getBet());
                         UI.printHeading(String.format("The house beat %s and collected their bet.", player.getName()));
                     } else if (houseHand == hand.total()) {
-                        UI.printHeading(String.format("Game ends in a DRAW between %s and the house!", player.getName()));
+                        UI.printHeading(
+                                String.format("Game ends in a DRAW between %s and the house!", player.getName()));
                     } else {
                         if (hand.total() <= 21) {
                             // Player beats house. Wins bet.
@@ -288,7 +301,8 @@ public class GameLogic {
                 System.out.println("BLACKJACK! " + player.getName() + " has " + hand.total() + ".");
                 endTurn = true;
             } else {
-                if (endTurn) break;
+                if (endTurn)
+                    break;
                 showTable(player, hand);
                 int playerAction = UI.readInt(printOptions(player, hand), 4);
                 switch (playerAction) {
@@ -352,8 +366,10 @@ public class GameLogic {
 
     private String printOptions(Player player, Hand hand) {
         String str = "1. Hit\n2. Stay\n";
-        if (Rules.checkSplit(hand)) str += "3. Split\n";
-        if (player.firstHand() && Rules.checkDouble(hand)) str += "4. Double\n";
+        if (Rules.checkSplit(hand))
+            str += "3. Split\n";
+        if (player.firstHand() && Rules.checkDouble(hand))
+            str += "4. Double\n";
         return str;
     }
 
@@ -394,7 +410,7 @@ public class GameLogic {
 
     private boolean playAgain() {
         while (true) {
-            int choice = UI.readInt("Want to play again?\n1. Yes\n2. No", 2);
+            int choice = UI.readInt("Want to play again?\n1. Yes\n2. No\n", 2);
             switch (choice) {
                 case 1:
                     return true;
