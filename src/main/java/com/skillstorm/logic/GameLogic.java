@@ -204,7 +204,6 @@ public class GameLogic {
                                 player.setInsurance(Double.parseDouble(betString));
                                 takeBetFlag = false;
                             }
-                            ;
                         }
                     case 'N':
                         betLogic = false;
