@@ -5,8 +5,6 @@ import com.skillstorm.assets.Player;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import org.json.simple.*;
 
 public class Save {
@@ -17,17 +15,16 @@ public class Save {
     /**
      * Saves the player object and all previous player data into a .json file.
      * 
-     * @param player
-     * @param leaderboardList
+     * @param playerList      Current list of players to be checked
+     * @param leaderboardList leaderboardList of long-term saved players
      */
     @SuppressWarnings("unchecked")
     public static void save(ArrayList<Player> playerList, ArrayList<Player> leaderboardList) {
 
-        // convert player to JSONOBject and if not in the current JSONArray of existing
-        // players, they are added with their current state
+        // JSONArray to store players in and subsequently write to json save file
         JSONArray playersJsonArray = new JSONArray();
 
-        // if player's name is not in namesList, add them to playerArray
+        // if player's name is not in namesList, add them to leaderboardList
         for (Player plyr : playerList) {
             if (!leaderboardList.contains(plyr)) {
                 leaderboardList.add(plyr);
@@ -51,22 +48,6 @@ public class Save {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-    }
-
-    public static HashMap<String, HashMap<HashMap<String, String>, HashMap<String, Double>>> convertArrayListToHashMap(
-            ArrayList<Player> playerList) {
-        HashMap<String, HashMap<HashMap<String, String>, HashMap<String, Double>>> mapForJSON = new HashMap<>();
-        for (Player player : playerList) {
-            HashMap<HashMap<String, String>, HashMap<String, Double>> mapOfPlayer = new HashMap<>();
-            HashMap<String, String> mapName = new HashMap<>();
-            HashMap<String, Double> mapEarnings = new HashMap<>();
-            mapName.put("name", player.getName());
-            mapEarnings.put("earnings", player.getEarnings());
-            mapOfPlayer.put(mapName, mapEarnings);
-            mapForJSON.put(player.getName(), mapOfPlayer);
-        }
-        return mapForJSON;
 
     }
 
