@@ -290,14 +290,14 @@ public class GameLogic {
 
         while (!endTurn) {
             if (hand.total() > 21) {
-                System.out.println("BUST! " + player.getName() + " has " + hand.total() + ".");
+                UI.printHeading("BUST! " + player.getName() + " has " + hand.total() + ".");
                 double loss = hand.getBet();
                 player.decreaseEarnings(loss);
                 hand.setBet(0); // Zeroing out the bet.
                 house.setEarnings(house.getEarnings() + loss);
                 endTurn = true;
             } else if (hand.total() == 21) {
-                System.out.println("BLACKJACK! " + player.getName() + " has " + hand.total() + ".");
+                UI.printHeading("BLACKJACK! " + player.getName() + " has " + hand.total() + ".");
                 endTurn = true;
             } else {
                 if (endTurn)
@@ -322,6 +322,14 @@ public class GameLogic {
                                 UI.pressEnter();
                             } else {
                                 hand.setBet(hand.getBet() * 2.0);
+                                UI.printHeading(
+                                        String.format("%s's bet doubled to %.2f.",
+                                                player.getName(), hand.getBet()));
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                                 hand.hit(deck.draw()); // Allowed one card for doubling down
                                 endTurn = true;
                                 continue; // Guarantees a check for Bust before settlement
@@ -335,9 +343,19 @@ public class GameLogic {
 
     private boolean containsNaturals() {
         if (house.getHand().total() == 21) {
-            System.out.println("House has a natural!");
+            UI.printHeading("House has a natural!");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             if (house.getHand().getCardList().getFirst().getRank() == Rank.ACE) {
-                System.out.println("House pays out insurance bets to players.");
+                UI.printHeading("House pays out insurance bets to players.");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 for (Player player : playerList) {
                     house.setEarnings(house.getEarnings() - player.getInsurance());
                     player.winInsurance();
@@ -348,14 +366,25 @@ public class GameLogic {
             for (Player player : playerList) {
                 if (house.getHand().getCardList().getFirst().getRank() == Rank.ACE) {
                     if (player.getInsurance() > 0.0) {
-                        System.out.println("Player loses insurance bet of " + player.getInsurance());
+                        UI.printHeading(String.format("%s loses insurance bet of %.2f", player.getName(),
+                                player.getInsurance()));
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         house.setEarnings(house.getEarnings() + player.getInsurance());
                         player.loseInsurance();
                     }
                 }
                 for (Hand hand : player.getAllHands()) {
                     if (hand.total() == 21) {
-                        System.out.println(player.getName() + " has a natural!");
+                        UI.printHeading(String.format("%s has a natural hand of 21!", player.getName()));
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         hand.setBet(hand.getBet() * 1.5);
                     }
                 }
