@@ -212,24 +212,27 @@ public class GameLogic {
     private void insuranceBets() {
         for (Player player : playerList) {
             boolean betLogic = true;
-            while (betLogic) {
-                String betCeilingStr = String.format("%.2f%n", player.getHand(0).getBet() / 2.0);
-                String answer = UI.readStr("Dealer is showing an Ace. Want to take an insurance bet of up to $"
-                        + betCeilingStr + "? (Y or N)");
-                switch (answer.toUpperCase().charAt(0)) {
-                    case 'Y':
-                        boolean takeBetFlag = true;
-                        while (takeBetFlag) {
-                            String betString = UI.readStr("Enter a number between 0.0 and " + betCeilingStr);
-                            if ((Double.valueOf(betString) instanceof Double) && Double.parseDouble(betString) > 0.0
-                                    && Double.parseDouble(betString) <= (player.getHand(0).getBet() / 2.0)) {
-                                player.setInsurance(Double.parseDouble(betString));
-                                takeBetFlag = false;
+            if (player.getEarnings() - player.getHand(0).getBet() > 0) {
+                while (betLogic) {
+                    double availableFunds = player.getHand(0).getBet() / 2.0;
+                    String betCeilingStr = String.format("%.2f%n", availableFunds);
+                    String answer = UI.readStr("Dealer is showing an Ace. Want to take an insurance bet of up to $"
+                            + betCeilingStr + "? (Y or N)");
+                    switch (answer.toUpperCase().charAt(0)) {
+                        case 'Y':
+                            boolean takeBetFlag = true;
+                            while (takeBetFlag) {
+                                String betString = UI.readStr("Enter a number between 0.0 and " + betCeilingStr);
+                                if ((Double.valueOf(betString) instanceof Double) && Double.parseDouble(betString) > 0.0
+                                        && Double.parseDouble(betString) <= availableFunds) {
+                                    player.setInsurance(Double.parseDouble(betString));
+                                    takeBetFlag = false;
+                                }
                             }
-                        }
-                    case 'N':
-                        betLogic = false;
-                        break;
+                        case 'N':
+                            betLogic = false;
+                            break;
+                    }
                 }
             }
         }
