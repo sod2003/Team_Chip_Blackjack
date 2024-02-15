@@ -1,6 +1,7 @@
 package com.skillstorm.logic;
 
 import com.skillstorm.assets.Hand;
+import com.skillstorm.assets.Player;
 import com.skillstorm.assets.Rank;
 
 public class Rules {
@@ -11,9 +12,10 @@ public class Rules {
      * @param hand to be checked
      * @return true if hand can be split
      */
-    public static boolean checkSplit(Hand hand) {
+    public static boolean checkSplit(Player player, Hand hand) {
         if (hand.getCardList().size() == 2
-                && hand.getCardList().get(0).getRank() == hand.getCardList().get(1).getRank()) {
+                && hand.getCardList().get(0).getRank() == hand.getCardList().get(1).getRank()
+                && (player.getEarnings() >= hand.getBet() * 2.0)) {
             return true;
         }
         return false;

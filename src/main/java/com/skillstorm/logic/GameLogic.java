@@ -350,7 +350,7 @@ public class GameLogic {
                         endTurn = true;
                         break;
                     case 3:
-                        if (Rules.checkSplit(hand)) {
+                        if (Rules.checkSplit(player, hand)) {
                             player.addNewHand(hand.split());
                         }
                     case 4:
@@ -448,7 +448,7 @@ public class GameLogic {
      */
     private String printOptions(Player player, Hand hand) {
         String str = "1. Hit\n2. Stay\n";
-        if (Rules.checkSplit(hand))
+        if (Rules.checkSplit(player, hand))
             str += "3. Split\n";
         if (player.firstHand() && Rules.checkDouble(hand))
             str += "4. Double\n";
