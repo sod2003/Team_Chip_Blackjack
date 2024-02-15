@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -60,7 +59,7 @@ public class Load {
      * Converts a JSONArray from the save file to an ArrayList of previous Players.
      * 
      * @param JSONPlayerList
-     * @return
+     * @return leaderboardList
      */
     public static ArrayList<Player> convertJSONArrayToPlayerList(JSONArray JSONPlayerList) {
         ArrayList<Player> newPlayerList = new ArrayList<>();
@@ -92,7 +91,7 @@ public class Load {
      * 
      * @param name
      * @param leaderboardList
-     * @return
+     * @return player
      */
     public static Player getReturningPlayer(String name, ArrayList<Player> leaderboardList)
             throws NoSuchElementException {
@@ -106,23 +105,5 @@ public class Load {
         // (create new player in the catch block)
         throw new NoSuchElementException("No previous player found. Create a new one.");
     }
-
-    // /**
-    // * NOT CURRENTLY USED--Checks a JSONObject for a matching String key and
-    // returns the value
-    // *
-    // * @param doc
-    // * @param key
-    // * @return
-    // */
-    // private JSONObject getJSONObjectFromFile(JSONObject doc, String key) {
-    // if (doc.containsKey(key)) {
-    // Object simpleObject = doc.get(key);
-    // if (simpleObject instanceof JSONObject) {
-    // return (JSONObject) simpleObject;
-    // }
-    // }
-    // return null;
-    // }
 
 }
