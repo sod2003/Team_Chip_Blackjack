@@ -191,14 +191,14 @@ public class GameLogic {
         for (Player player : playerList) {
             boolean betLogic = true;
             while (betLogic) {
-                String betCeilingStr = String.format("%.2f%n", player.getHand(0).getBet() / 2.0);
+                String betCeilingStr = String.format("%.2f", player.getHand(0).getBet() / 2.0);
                 String answer = UI.readStr("Dealer is showing an Ace. Want to take an insurance bet of up to $"
-                        + betCeilingStr + "? (Y or N)");
+                        + betCeilingStr + "? (Y or N)\n");
                 switch (answer.toUpperCase().charAt(0)) {
                     case 'Y':
                         boolean takeBetFlag = true;
                         while (takeBetFlag) {
-                            String betString = UI.readStr("Enter a number between 0.0 and " + betCeilingStr);
+                            String betString = UI.readStr("Enter a number between 0.0 and " + betCeilingStr + "\n");
                             if ((Double.valueOf(betString) instanceof Double) && Double.parseDouble(betString) > 0.0
                                     && Double.parseDouble(betString) <= (player.getHand(0).getBet() / 2.0)) {
                                 player.setInsurance(Double.parseDouble(betString));
@@ -331,6 +331,8 @@ public class GameLogic {
                                     e.printStackTrace();
                                 }
                                 hand.hit(deck.draw()); // Allowed one card for doubling down
+                                showTable(player, hand);
+                                UI.pressEnter();
                                 endTurn = true;
                                 continue; // Guarantees a check for Bust before settlement
                             }
