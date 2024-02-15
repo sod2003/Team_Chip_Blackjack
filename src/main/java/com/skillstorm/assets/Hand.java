@@ -2,10 +2,11 @@ package com.skillstorm.assets;
 
 import java.util.LinkedList;
 
-// Hand Cards in hand
+// Hand Cards in hand, and associated bet.
 public class Hand {
 
     private LinkedList<Card> cards = new LinkedList<>();
+    private double bet;
 
     public Hand() {
     }
@@ -42,20 +43,33 @@ public class Hand {
     }
 
     /**
-     * Draws a card from the deck provided in the argument and adds it to the hand.
+     * Draws a card
      * 
-     * @param deck
+     * @param card
      */
-    public void hit(Deck deck) {
-        cards.add(deck.draw());
+    public void hit(Card card) {
+        cards.add(card);
     }
 
-    public void split() {
-        // TODO add split method to Hand
+    public Hand split() {
+        Card splitCard = cards.removeLast();
+        LinkedList<Card> secondStack = new LinkedList<>();
+        secondStack.add(splitCard);
+        Hand newHand = new Hand(secondStack);
+        newHand.setBet(getBet());
+        return newHand;
     }
 
-    public void stay() {
-        // TODO add stay method to hand
+    public void clear() {
+        cards.clear();
+    }
+
+    public double getBet() {
+        return bet;
+    }
+
+    public void setBet(double bet) {
+        this.bet = bet;
     }
 
     @Override
@@ -165,8 +179,10 @@ public class Hand {
      */
     public String mask() {
         cards.get(0).setFaceUp(false);
+        for (int i = 1; i < cards.size(); i++) {
+            cards.get(i).setFaceUp(true);
+        }
         return asciiHand();
 
     }
-
 }
