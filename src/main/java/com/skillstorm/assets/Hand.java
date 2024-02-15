@@ -181,8 +181,9 @@ public class Hand {
      * @return String of ASCII art of the hand after hiding the first card
      */
     public String mask() {
-        cards.get(0).setFaceUp(false);
-        for (int i = 1; i < cards.size(); i++) {
+        cards.get(0).setFaceUp(true);
+        cards.get(1).setFaceUp(false);
+        for (int i = 2; i < cards.size(); i++) {
             cards.get(i).setFaceUp(true);
         }
         return asciiHand();

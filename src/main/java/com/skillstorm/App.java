@@ -15,9 +15,9 @@ public final class App {
     static void mainMenu() {
         boolean gameComplete = false;
 
-        UI.printHeading("Welcome to Team Chip's Blackjack Game!");
+        UI.clearConsole(); // Wipes any previous text from the console at the beginning of the game.
         while (!gameComplete) {
-            // printMenu();
+            UI.printHeading("Welcome to Team Chip's Blackjack Game!");
             int selection = UI.readInt("1. Start Game\n"
                     + "2. See Leaderboard\n"
                     + "3. Exit Game\n", 3);
