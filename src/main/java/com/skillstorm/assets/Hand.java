@@ -43,8 +43,8 @@ public class Hand {
     }
 
     /**
-     * Draws a card
-     * 
+     * Adds a card to the hand
+     *
      * @param card
      */
     public void hit(Card card) {
@@ -60,6 +60,9 @@ public class Hand {
         return newHand;
     }
 
+    /**
+     * Removes all cards from the hand
+     */
     public void clear() {
         cards.clear();
     }
@@ -159,7 +162,7 @@ public class Hand {
      * return an
      * ASCII Art String representation of all the cards in hand, face up.
      * 
-     * @return
+     * @return String of ASCII art of the hand after flipping all cards to face up
      */
     public String show() {
         for (Card card : cards) {
@@ -175,7 +178,7 @@ public class Hand {
      * ASCII Art String representation of all the cards in hand, with the first card
      * "masked".
      * 
-     * @return
+     * @return String of ASCII art of the hand after hiding the first card
      */
     public String mask() {
         cards.get(0).setFaceUp(true);
