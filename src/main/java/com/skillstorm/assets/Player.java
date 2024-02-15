@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 
-// Player Name Earnings Hand of cards Hit method Split method Stay method etc.
+// Player representing the user of the game and their hand of cards, earnings, etc.
 public class Player {
 
     private String name;
@@ -105,8 +105,7 @@ public class Player {
     /**
      * Converts a player object to a JSON
      * 
-     * @param player
-     * @return
+     * @return json object of this player
      */
     public JSONObject toJSONObject() {
 
