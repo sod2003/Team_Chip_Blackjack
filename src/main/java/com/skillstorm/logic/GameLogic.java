@@ -26,7 +26,7 @@ public class GameLogic {
     /**
      * Add a player to GameLogic's playerList
      * 
-     * @param playerToAdd
+     * @param playerToAdd Player to be added to the current game
      */
     public void addActivePlayer(Player playerToAdd) {
         playerList.add(playerToAdd);
@@ -36,7 +36,7 @@ public class GameLogic {
      * Add a player to GameLogic's leaderboardList
      * This is what will be serialized and saved to a JSON file
      * 
-     * @param playerToAdd
+     * @param playerToAdd player to be saved in the leaderboard
      */
     public void addLeaderboardPlayer(Player playerToAdd) {
         leaderboardList.add(playerToAdd);
@@ -48,6 +48,14 @@ public class GameLogic {
 
     public void setPlayerList(ArrayList<Player> playerList) {
         this.playerList = playerList;
+    }
+
+    public ArrayList<Player> getLeaderboardList() {
+        return leaderboardList;
+    }
+
+    public void setLeaderboardList(ArrayList<Player> leaderboardList) {
+        this.leaderboardList = leaderboardList;
     }
 
     public House getHouse() {
@@ -97,11 +105,19 @@ public class GameLogic {
         }
     }
 
+    /**
+     * Creates a new deck of cards for the current game and shuffles it
+     */
     private void shuffleDeck() {
         deck = new Deck();
         deck.shuffle();
     }
 
+    /**
+     * Logic for accepting the player's bet
+     * Includes the possibility of the player being out of earnings, and gives them
+     * more to be able to continue playing
+     */
     protected void takeBets() {
         for (Player player : playerList) {
             System.out.print("");
@@ -137,6 +153,9 @@ public class GameLogic {
         }
     }
 
+    /**
+     * Takes the player's name and bet and begins a new game
+     */
     public void startGame() {
         playerList.clear();
         boolean gameOver = false;
@@ -187,6 +206,9 @@ public class GameLogic {
         }
     }
 
+    /**
+     * Logic for taking insurance bet if the house is showing an Ace
+     */
     private void insuranceBets() {
         for (Player player : playerList) {
             boolean betLogic = true;
@@ -213,6 +235,9 @@ public class GameLogic {
         }
     }
 
+    /**
+     * Logic for settling win/loss at the end of each round
+     */
     private void settlement() {
         int houseHand = house.getHand().total();
         if (houseHand > 21) {
@@ -260,6 +285,9 @@ public class GameLogic {
         UI.pressEnter();
     }
 
+    /**
+     * AI logic for the house's turn
+     */
     private void houseActions() {
         UI.printHeading("It is now the house's turn.");
         try {
@@ -285,6 +313,13 @@ public class GameLogic {
         }
     }
 
+    /**
+     * 
+     * Logic for handling the different options during a player's turn
+     * 
+     * @param player current player
+     * @param hand   current player's hand
+     */
     protected void handlePlayerTurn(Player player, Hand hand) {
         boolean endTurn = false;
 
@@ -333,6 +368,11 @@ public class GameLogic {
         player.setFirstHand(false);
     }
 
+    /**
+     * Logic for checking if the house has naturals in their hand
+     * 
+     * @return true or false
+     */
     private boolean containsNaturals() {
         if (house.getHand().total() == 21) {
             System.out.println("House has a natural!");
@@ -364,6 +404,14 @@ public class GameLogic {
         return false;
     }
 
+    /**
+     * Options to display during the player's turn
+     * Conditional depending on the contents of the player's hand
+     * 
+     * @param player current player
+     * @param hand   current player's hand
+     * @return
+     */
     private String printOptions(Player player, Hand hand) {
         String str = "1. Hit\n2. Stay\n";
         if (Rules.checkSplit(hand))
@@ -373,6 +421,12 @@ public class GameLogic {
         return str;
     }
 
+    /**
+     * Displays both the player's and house's hands in ASCII form on the screen
+     * 
+     * @param player
+     * @param hand
+     */
     private void showTable(Player player, Hand hand) {
         UI.clearConsole();
         System.out.println("The House Hand: \n" + house.getHand().mask());
@@ -380,6 +434,9 @@ public class GameLogic {
                 player.getName() + "'s Hand with " + hand.total() + ":\n" + hand.show());
     }
 
+    /**
+     * Displays the leaderboard for the player
+     */
     public void printLeaderboard() {
         leaderboardList = Load.load();
         if (leaderboardList == null || leaderboardList.isEmpty()) {
@@ -408,9 +465,14 @@ public class GameLogic {
         UI.pressEnter();
     }
 
+    /**
+     * Logic for asking if the player wants to play again
+     * 
+     * @return boolean based on player's choice
+     */
     private boolean playAgain() {
         while (true) {
-            int choice = UI.readInt("Want to play again?\n1. Yes\n2. No\n", 2);
+            int choice = UI.readInt("Want to play another round?\n1. Yes\n2. No\n", 2);
             switch (choice) {
                 case 1:
                     return true;
@@ -423,11 +485,4 @@ public class GameLogic {
         }
     }
 
-    public ArrayList<Player> getLeaderboardList() {
-        return leaderboardList;
-    }
-
-    public void setLeaderboardList(ArrayList<Player> leaderboardList) {
-        this.leaderboardList = leaderboardList;
-    }
 }
