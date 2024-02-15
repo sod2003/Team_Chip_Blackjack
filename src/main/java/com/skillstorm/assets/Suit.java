@@ -1,6 +1,11 @@
 package com.skillstorm.assets;
 
 public enum Suit {
+
+    /**
+     * Suits to be used for Cards
+     */
+
     HEART("|(\\/)|", "| \\/ |"),
     DIAMOND("| /\\ |", "| \\/ |"),
     SPADE("| /\\ |", "|(__)|"),

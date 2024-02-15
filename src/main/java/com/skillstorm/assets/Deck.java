@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-// Deck All cards currently in the Deck Shuffle method Deal method Card Suit Value
 public class Deck {
     private List<Card> cards;
 
@@ -21,14 +20,22 @@ public class Deck {
         return cards;
     }
 
+    /**
+     * draw a single card from the deck
+     * 
+     * @return card
+     */
     public Card draw() {
         return cards.remove(0);
     }
 
+    /**
+     * Shuffle the deck
+     */
     public void shuffle() {
         Collections.shuffle(cards);
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;

@@ -3,8 +3,6 @@ package com.skillstorm.assets;
 import java.util.Arrays;
 import java.util.List;
 
-// The Card class, not specifically mentioned in the requirements, but it's a good design decision to delegate.
-
 public class Card {
     private Suit suit;
     private Rank rank;
@@ -31,6 +29,11 @@ public class Card {
         this.faceUp = faceUp;
     }
 
+    /**
+     * Returns an array of cards based on a standard 52 card deck
+     * 
+     * @return 52 card array
+     */
     public static Card[] generateCards() {
         Card[] cards = new Card[52];
         int index = 0;
@@ -46,7 +49,7 @@ public class Card {
     /**
      * Returns an ASCII Art String representation of the card.
      * 
-     * @return
+     * @return ASCII art string of card
      */
     public String show() {
         StringBuilder cardArt = new StringBuilder();
@@ -144,11 +147,21 @@ public class Card {
         return rank + " of " + suit;
     }
 
+    /**
+     * Used only during testing
+     * 
+     * @return
+     */
     public static List<Card> TestCardSplit() {
         List<Card> cards = Arrays.asList(new Card(Suit.DIAMOND, Rank.ACE), new Card(Suit.CLUB, Rank.ACE));
         return cards;
     }
 
+    /**
+     * Used only during testing
+     * 
+     * @return
+     */
     public static List<Card> TestDouble() {
         List<Card> cards = Arrays.asList(new Card(Suit.DIAMOND, Rank.FIVE), new Card(Suit.CLUB, Rank.SIX));
         return cards;

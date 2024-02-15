@@ -8,13 +8,10 @@ public class UI {
 
     /**
      * Method to get user input as int for multiple choice prompts.
-     * Use the prompt argument to ask the user for input.
-     * Use the userChoices argument to set the amount of choices they have
-     * available.
      * Anything less than zero or greater than the amount will re-prompt the user.
      * 
-     * @param prompt
-     * @param userChoices
+     * @param prompt      string to ask the user for input
+     * @param userChoices number of choices that are available
      * @return USER INPUT
      */
     public static int readInt(String prompt, int userChoices) {
@@ -37,8 +34,7 @@ public class UI {
      * Method to get user input as string. Use the prompt argument to ask the user
      * for input.
      * 
-     * @param prompt
-     * @param userChoices
+     * @param prompt to ask the user for input
      * @return USER INPUT
      */
     public static String readStr(String prompt) {
@@ -76,18 +72,18 @@ public class UI {
     }
 
     /**
-     * Prints a heading from parameter title with separators above and below.
+     * Prints a heading from parameter heading with separators above and below.
      * 
-     * @param title
+     * @param heading string that you want to print
      */
-    public static void printHeading(String title) {
-        printSeparator(30);
-        System.out.println(title);
-        printSeparator(30);
+    public static void printHeading(String heading) {
+        printSeparator(50);
+        System.out.println(heading);
+        printSeparator(50);
     }
 
     /**
-     * Waits for the user to input any value and press enter. Gives them a chance to
+     * Waits for the user to press enter. Gives them a chance to
      * read what is on the screen if needed.
      */
     public static void pressEnter() {
