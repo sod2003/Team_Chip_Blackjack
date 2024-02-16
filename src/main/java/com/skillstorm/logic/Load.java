@@ -34,8 +34,6 @@ public class Load {
             } catch (Exception e) {
                 UI.printHeading(e.getMessage());
             }
-        } else {
-            // The path could not be created for some reason
         }
 
         // JSONArray to hold info from JSON file
