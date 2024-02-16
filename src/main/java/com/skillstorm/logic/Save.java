@@ -3,14 +3,16 @@ package com.skillstorm.logic;
 import com.skillstorm.assets.Player;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import org.json.simple.*;
 
 public class Save {
 
+    private static String homeDir = System.getProperty("user.home");
     private static String fileName = "BlackjackPlayers.json";
-    private static String path = "src/main/resources/";
+    private static String path = homeDir + File.separator + "Team_Chip_BlackJack";
 
     /**
      * Saves the player object and all previous player data into a .json file.

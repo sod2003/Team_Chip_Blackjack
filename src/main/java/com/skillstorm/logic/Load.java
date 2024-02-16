@@ -13,8 +13,10 @@ import com.skillstorm.assets.Player;
 
 public class Load {
 
+    private static String homeDir = System.getProperty("user.home");
     private static String fileName = "BlackjackPlayers.json";
-    private static String path = "src/main/resources/";
+    private static String path = homeDir + File.separator + "Team_Chip_BlackJack";
+    private static File customDir = new File(path);
 
     /**
      * Reads previous player data from a JSON file and returns it as an ArrayList of
@@ -24,6 +26,14 @@ public class Load {
      * @return
      */
     public static ArrayList<Player> load() {
+
+        if (!customDir.exists()) {
+            try {
+                customDir.mkdirs();
+            } catch (Exception e) {
+                UI.printHeading(e.getMessage());
+            }
+        }
 
         // JSONArray to hold info from JSON file
         JSONArray playerJSONArray = new JSONArray();
